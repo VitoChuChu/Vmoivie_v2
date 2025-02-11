@@ -1,14 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import {
-  Col,
-  Row,
-  Button,
-  // Modal,
-  Tooltip,
-  message,
-} from "antd";
-// import ReactPlayer from "react-player";
+import { Col, Row, Button, Tooltip, message } from "antd";
 import styled from "styled-components";
 import CastCards from "../../components/Cards/CastCards";
 import MoviesCard from "../../components/Cards/MoviesCard";

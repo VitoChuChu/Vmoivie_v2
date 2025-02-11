@@ -27,6 +27,6 @@
   "scripts": {
     "typeorm": "typeorm-ts-node-commonjs",
     "tslint": "tslint --project . src/**/*.ts src/**/*.tsx",
-    "start": "nodemon --watch './**/*.ts' --exec 'ts-node' src/index.ts"
+    "start": "nodemon --watch './**/*.ts' --exec ts-node src/index.ts"
   }
 }

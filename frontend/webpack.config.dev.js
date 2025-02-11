@@ -11,7 +11,7 @@ module.exports = merge(webpackConfigBase, {
     static: {
       directory: path.join(__dirname, "./build/js"),
     },
-    port: 3000,
+    port: 3001,
     compress: true,
     open: true,
     hot: true,

@@ -50,8 +50,8 @@ AppDataSource.initialize()
     app.use(fetchSimilarMovies);
     app.use(fetchSearchMovies);
 
-    app.listen("5002", () => {
-      console.log("Server is running on port 5002");
+    app.listen("8080", () => {
+      console.log("Server is running on port 8080");
     });
   })
   .catch((error) => console.log(error));
