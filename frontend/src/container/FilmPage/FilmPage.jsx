@@ -14,7 +14,7 @@ import {
   fetchMovieCast,
   fetchMovieVideos,
   fetchSimilarMovies,
-} from "../../service/fetchData_Axios";
+} from "../../service/TMDB_API";
 
 import PropTypes from "prop-types";
 

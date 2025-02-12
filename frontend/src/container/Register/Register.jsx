@@ -4,7 +4,7 @@ import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Row, Col, Alert } from "antd";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import axios from "axios";
+import { register } from "../../service/DB_API";
 
 const CcRow = styled(Row)`
   display: flex;
@@ -29,33 +29,22 @@ const Register = ({ loginStatusHandler }) => {
     loginStatusHandler: PropTypes.func,
   };
 
-  const onSubmitRegister = () => {
+  const onSubmitRegister = async () => {
     const config = {
-      method: "post",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      data: {
-        userName: userName,
-        userEmail: userEmail,
-        userPassword: userPassword,
-      },
+      userName: userName,
+      userEmail: userEmail,
+      userPassword: userPassword,
     };
-    axios("http://localhost:8080/register", config)
-      .then((result) => {
-        if (result.data.userID) {
-          localStorage.setItem("token", result.data.accessToken);
-          localStorage.setItem("userName", result.data.userName);
-          loginStatusHandler();
-          navigate("/");
-        }
-        if (result.data === "User exist") {
-          setDescription("User exist");
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    const result = await register(config);
+    if (!result) return;
+    if (result && result === "User exist") {
+      setDescription("User exist");
+      return;
+    }
+    localStorage.setItem("token", result.accessToken);
+    localStorage.setItem("userName", result.userName);
+    loginStatusHandler();
+    navigate("/");
   };
 
   return (

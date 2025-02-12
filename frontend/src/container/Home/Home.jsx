@@ -7,12 +7,12 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 
 import {
-  fecthNowPlayingMovies,
+  fetchNowPlayingMovies,
   fetchGenres,
   fetchMovieByGenre,
-  fecthPopularMovies,
+  fetchPopularMovies,
   fetchUpcomingMovies,
-} from "../../service/fetchData_Axios";
+} from "../../service/TMDB_API";
 
 const H1 = styled.h1`
   color: #f4c10f;
@@ -36,10 +36,10 @@ const Home = ({ scrollToTop }) => {
 
   useEffect(() => {
     const fetchAPI = async () => {
-      setNowM(await fecthNowPlayingMovies());
+      setNowM(await fetchNowPlayingMovies());
       setGenres(await fetchGenres());
       setMovieByGenre(await fetchMovieByGenre(28));
-      setPopM(await fecthPopularMovies());
+      setPopM(await fetchPopularMovies());
       setUpM(await fetchUpcomingMovies());
     };
     fetchAPI();

@@ -5,6 +5,7 @@ import { Button, Form, Input, Row, Col, Alert } from "antd";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import axios from "axios";
+import { login } from "../../service/DB_API";
 
 const CcRow = styled(Row)`
   display: flex;
@@ -34,19 +35,15 @@ const Login = ({ loginStatusHandler, navigate }) => {
       enterEmail: enterEmail,
       enterPassword: enterPassword,
     };
-    axios
-      .post("http://localhost:8080/login", config)
-      .then(function (result) {
-        if (result.data.userID) {
-          localStorage.setItem("token", result.data.accessToken);
-          localStorage.setItem("userName", result.data.userName);
-          loginStatusHandler();
-          navigate("/");
-        }
-      })
-      .catch(() => {
-        setLoginResult(false);
-      });
+    const data = await login(config);
+    if (data) {
+      localStorage.setItem("token", data.accessToken);
+      localStorage.setItem("userName", data.userName);
+      navigate("/");
+      loginStatusHandler();
+    } else {
+      setLoginResult(false);
+    }
   };
 
   return (

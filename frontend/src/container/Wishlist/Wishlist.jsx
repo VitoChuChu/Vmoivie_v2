@@ -6,6 +6,7 @@ import notLoginImage from "../../images/loginImg.svg";
 import emptyImage from "../../images/emptyImg.svg";
 import PropTypes from "prop-types";
 import axios from "axios";
+import { getWishList } from "../../service/DB_API";
 
 const CcRow = styled(Row)`
   display: flex;
@@ -44,17 +45,14 @@ const Wishlist = ({ scrollToTop }) => {
 
   const getUserWishlistMovies = async () => {
     if (userToken != null) {
-      const config = {
-        method: "put",
-        headers: {
-          Authorization: userToken,
-        },
-      };
-      const data = await axios(
-        "http://localhost:8080/filmpage/getWishlist",
-        config
-      );
-      return data.data;
+      const header = { Authorization: userToken };
+      const data = await getWishList(header);
+      // console.log(data);
+      // const data = await axios(
+      //   "http://localhost:8080/filmpage/getWishlist",
+      //   config
+      // );
+      // return data.data;
     }
   };
 
