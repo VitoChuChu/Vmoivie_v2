@@ -17,12 +17,11 @@ module.exports = {
   },
   plugins: ["react", "import"],
   rules: {
-    indent: ["warn", 2],
-    "linebreak-style": ["error", "unix"],
+    indent: "off",
+    "linebreak-style": "off",
     quotes: ["error", "double"],
     semi: ["error", "always"],
     "no-undef": 0,
-    // "react/prop-types": "off",
   },
   settings: {
     "import/resolver": {

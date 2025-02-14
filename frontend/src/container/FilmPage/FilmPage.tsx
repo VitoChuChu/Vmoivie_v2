@@ -2,12 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Col, Row, Button, Tooltip, message } from "antd";
 import styled from "styled-components";
-import CastCards from "../../components/Cards/CastCards";
-import MoviesCard from "../../components/Cards/MoviesCard";
-import TrailerModal from "../../components/TrailerModal/TrailerModal";
-import Trailer from "../../images/Tralier.svg";
-import UnlikeImg from "../../images/LikeT.svg";
-import LikeImg from "../../images/LikeR.svg";
+import CastCards from "../../components/compose/Cards/CastCards";
+import TrailerModal from "../../components/compose/TrailerModal/TrailerModal";
+import MoviesCard from "../../components/compose/Cards/MoviesCard";
+import { MovieDetail, Cast } from "../../interface/movie";
+
 import axios from "axios";
 import {
   fetchMovieDetail,
@@ -16,9 +15,14 @@ import {
   fetchSimilarMovies,
 } from "../../service/TMDB_API";
 
-import PropTypes from "prop-types";
+const Trailer = require("../../images/Tralier.svg") as string;
+const UnlikeImg = require("../../images/LikeT.svg") as string;
+const LikeImg = require("../../images/LikeR.svg") as string;
 
-const FilmPageBKG = styled.img`
+const FilmPageBKG = styled.img.attrs((props: { src: string; alt: string }) => ({
+  src: props.src,
+  alt: props.alt,
+}))`
   position: absolute;
   width: 100%;
   min-height: 100vh;
@@ -95,7 +99,7 @@ const FlexStartCRow = styled(Row)`
   align-items: flex-start;
 `;
 
-const PosterImg = styled.img`
+const PosterImg = styled.img<{ src: string; alt: string }>`
   height: auto;
   width: 22vw;
   object-fit: contain;
@@ -128,7 +132,7 @@ const StyledButton = styled(Button)`
   }
 `;
 
-const UnLikeButton = styled.div`
+const UnLikeButton = styled(Button)`
   width: 150px;
   height: 60px;
   display: inline-block;
@@ -142,7 +146,7 @@ const UnLikeButton = styled.div`
   }
 `;
 
-const LikeButton = styled.div`
+const LikeButton = styled(Button)`
   width: 150px;
   height: 60px;
   display: inline-block;
@@ -156,22 +160,24 @@ const LikeButton = styled.div`
   }
 `;
 
-const FilmPage = ({ scrollToTop }) => {
-  const params = useParams();
-  const [detail, setDetail] = useState([]);
-  const [video, setVideo] = useState([]);
-  const [casts, setCasts] = useState([]);
-  const [similarMovies, setSimilarMovies] = useState([]);
+interface FilmPageProps {
+  scrollToTop: () => void;
+}
+
+const FilmPage: React.FC<FilmPageProps> = ({ scrollToTop }) => {
+  const params = useParams<{ id: string }>();
+  const [detail, setDetail] = useState<MovieDetail | null>(null);
+  const [video, setVideo] = useState<any>(null);
+  const [casts, setCasts] = useState<Cast[]>([]);
+  const [similarMovies, setSimilarMovies] = useState<MovieDetail[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [like, setLike] = useState(false);
   const [loginStatus, setLoginStatus] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
-  FilmPage.propTypes = {
-    scrollToTop: PropTypes.func,
-  };
 
   const userToken = localStorage.getItem("token");
-  const checkWishlist = async () => {
+
+  const checkWishlist = async (): Promise<boolean> => {
     if (userToken != null) {
       const config = {
         method: "put",
@@ -187,17 +193,12 @@ const FilmPage = ({ scrollToTop }) => {
         "http://localhost:8080/filmpage/chechWishlist",
         config
       );
-      if (data.data) {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      return false;
+      return data.data;
     }
+    return false;
   };
 
-  const success = (text) => {
+  const success = (text: string) => {
     messageApi.open({
       type: "success",
       content: text,
@@ -205,36 +206,40 @@ const FilmPage = ({ scrollToTop }) => {
   };
 
   const addUserWishlist = async () => {
-    const config = {
-      method: "post",
-      headers: {
-        authorization: userToken,
-        "content-type": "application/json",
-      },
-      data: {
-        movieID: detail.id,
-        title: detail.title,
-        release_date: detail.release_date,
-        poster_path: detail.poster_path,
-      },
-    };
-    await axios("http://localhost:8080/filmpage/addUserWishlist", config);
-    success("Added to wishlist successfully");
+    if (detail) {
+      const config = {
+        method: "post",
+        headers: {
+          authorization: userToken,
+          "content-type": "application/json",
+        },
+        data: {
+          movieID: detail.id,
+          title: detail.title,
+          release_date: detail.release_date,
+          poster_path: detail.poster_path,
+        },
+      };
+      await axios("http://localhost:8080/filmpage/addUserWishlist", config);
+      success("Added to wishlist successfully");
+    }
   };
 
   const removeUserWishlist = async () => {
-    const config = {
-      method: "delete",
-      headers: {
-        authorization: userToken,
-        "content-type": "application/json",
-      },
-      data: {
-        movieID: detail.id,
-      },
-    };
-    await axios("http://localhost:8080/filmpage/removeUserWishlist", config);
-    success("Removed from wishlist successfully");
+    if (detail) {
+      const config = {
+        method: "delete",
+        headers: {
+          authorization: userToken,
+          "content-type": "application/json",
+        },
+        data: {
+          movieID: detail.id,
+        },
+      };
+      await axios("http://localhost:8080/filmpage/removeUserWishlist", config);
+      success("Removed from wishlist successfully");
+    }
   };
 
   const likeHandler = async () => {
@@ -257,25 +262,24 @@ const FilmPage = ({ scrollToTop }) => {
     checkLoginStatus();
     const fetchAPI = async () => {
       setLike(await checkWishlist());
-      setDetail(await fetchMovieDetail(params.id));
-      setVideo(await fetchMovieVideos(params.id));
-      setCasts(await fetchMovieCast(params.id));
-      setSimilarMovies(await fetchSimilarMovies(params.id));
+      setDetail(await fetchMovieDetail(Number(params.id)));
+      setVideo(await fetchMovieVideos(Number(params.id)));
+      setCasts(await fetchMovieCast(Number(params.id)));
+      setSimilarMovies(await fetchSimilarMovies(Number(params.id)));
     };
     fetchAPI();
   }, [params.id]);
 
+  if (!detail) {
+    return null;
+  }
+
   const imgUrl = `https://image.tmdb.org/t/p/original/${detail.poster_path}`;
   const imgUrl_low = `https://image.tmdb.org/t/p/w780/${detail.backdrop_path}`;
 
-  let genres = [];
-  genres = detail.genres;
-  let genresList;
-  if (genres) {
-    genresList = genres.map((item) => {
-      return <StyledButton key={item.name}>{item.name}</StyledButton>;
-    });
-  }
+  const genresList = detail.genres?.map((item) => (
+    <StyledButton key={item.name}>{item.name}</StyledButton>
+  ));
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -304,7 +308,7 @@ const FilmPage = ({ scrollToTop }) => {
               <Col xs={22} lg={15}>
                 <Row>
                   <Col span={24}>
-                    <TitleH1 style={{ color: "white" }}>{detail.title}</TitleH1>
+                    <TitleH1>{detail.title}</TitleH1>
                   </Col>
                   <Col span={24} data-testid="genreList">
                     {genresList}
@@ -312,19 +316,15 @@ const FilmPage = ({ scrollToTop }) => {
                   <Col span={24}>
                     <Row>
                       <Col xs={22} lg={6}>
-                        <TitleH2 style={{ color: "#f4c10f" }}>Run time</TitleH2>
+                        <TitleH2>Run time</TitleH2>
                         <p style={{ color: "white" }}>{detail.runtime}mins</p>
                       </Col>
                       <Col xs={22} lg={6} data-testid="releaseDate">
-                        <TitleH2 style={{ color: "#f4c10f" }}>
-                          Release Date
-                        </TitleH2>
+                        <TitleH2>Release Date</TitleH2>
                         <p style={{ color: "white" }}>{detail.release_date}</p>
                       </Col>
                       <Col xs={22} lg={8} data-testid="officalWebsite">
-                        <TitleH2 style={{ color: "#f4c10f" }}>
-                          Offical website
-                        </TitleH2>
+                        <TitleH2>Offical website</TitleH2>
                         <a
                           href={detail.homepage}
                           target="_blank"
@@ -337,10 +337,10 @@ const FilmPage = ({ scrollToTop }) => {
                     </Row>
                   </Col>
                   <Col span={24} data-testid="overview">
-                    <TitleH2 style={{ color: "#f4c10f" }}>Overview</TitleH2>
+                    <TitleH2>Overview</TitleH2>
                     <p style={{ color: "white" }}>{detail.overview}</p>
                   </Col>
-                  {video === undefined ? null : (
+                  {video && (
                     <Col span={24} style={{ margin: "1rem 0" }}>
                       <img
                         src={Trailer}
@@ -360,7 +360,6 @@ const FilmPage = ({ scrollToTop }) => {
                       />
                     </Col>
                   )}
-
                   <Col span={24} style={{ position: "relative" }}>
                     {contextHolder}
                     {loginStatus ? (

@@ -2,12 +2,12 @@ import React from "react";
 import { Link } from "react-router-dom";
 import ReactStars from "react-rating-stars-component";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper";
-import "swiper/css";
-import "swiper/css/pagination";
-import "swiper/css/navigation";
+import "swiper/swiper.min.css";
+import "swiper/components/navigation/navigation.min.css";
+
 import styled from "styled-components";
-import PropTypes from "prop-types";
+import SwiperCore, { Navigation } from "swiper/core";
+SwiperCore.use([Navigation]);
 
 const MovieContainer = styled.div`
   display: flex;
@@ -16,33 +16,50 @@ const MovieContainer = styled.div`
   align-items: center;
   text-align: center;
 `;
-const Img = styled.img`
+
+const Img = styled.img.attrs((props: { src: string; alt: string }) => ({
+  className: "img-fluid blur",
+  src: props.src,
+  alt: props.alt,
+}))`
   display: block;
   width: 100%;
   height: 100%;
   object-fit: contain;
   object-position: center;
 `;
-const Title = styled.h1`
+
+const Title = styled.h1.attrs(
+  (props: { className?: string; children?: React.ReactNode }) => ({
+    className: props.className,
+    children: props.children,
+  })
+)`
   color: white;
   font-size: 1.1rem;
   margin: 0;
 `;
 
-const SwiperComp = ({ items, scrollToTop }) => {
-  SwiperComp.propTypes = {
-    items: PropTypes.array,
-    scrollToTop: PropTypes.func,
-  };
+interface Movie {
+  id: number;
+  title: string;
+  poster_path: string;
+  vote_average: number;
+}
+
+interface SwiperCompProps {
+  items: Movie[];
+  scrollToTop: () => void;
+}
+
+const SwiperComp: React.FC<SwiperCompProps> = ({ items, scrollToTop }) => {
   return (
     <div>
       <Swiper
         style={{ zIndex: "0" }}
-        slidesPerView={5}
         spaceBetween={20}
         loop={false}
         navigation={true}
-        modules={[Navigation]}
         breakpoints={{
           320: {
             slidesPerView: 1,

@@ -3,13 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Layout, Menu, Button, Drawer } from "antd";
 import { CloseOutlined, MenuOutlined } from "@ant-design/icons";
-const { Header } = Layout;
-import PropTypes from "prop-types";
-import logo from "../../images/VmovieLogoYS.svg";
 
+const logo = require("../../../images/VmovieLogoYS.svg") as string;
+
+const { Header } = Layout;
 const ComputerHeaderContainer = styled.div`
   display: flex;
-
   width: 100vw;
   height: 64px;
   align-items: center;
@@ -68,24 +67,31 @@ const StyledMenu = styled(Menu)`
   }
 `;
 
-const Nav = ({ loginStatus, loginStatusHandler }) => {
+interface NavProps {
+  loginStatus: boolean;
+  loginStatusHandler: () => void;
+}
+
+const Nav: React.FC<NavProps> = ({ loginStatus, loginStatusHandler }) => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const userName = localStorage.getItem("userName");
 
-  Nav.propTypes = {
-    loginStatus: PropTypes.bool,
-    loginStatusHandler: PropTypes.func,
-  };
-
   const showDrawer = () => {
     setOpen(true);
   };
+
   const onClose = () => {
     setOpen(false);
   };
 
-  const items = [
+  interface MenuItem {
+    label: React.ReactNode;
+    key: string;
+    onClick?: () => void;
+  }
+
+  const items: MenuItem[] = [
     {
       label: (
         <Link to="/" onClick={onClose}>
@@ -145,9 +151,7 @@ const Nav = ({ loginStatus, loginStatusHandler }) => {
             items={items}
           ></StyledMenu>
         </StyledHeader>
-        {userName ? (
-          <StyledH1 data-testid="userName">Hi,{userName}</StyledH1>
-        ) : null}
+        {userName ? <StyledH1>Hi, {userName}</StyledH1> : null}
       </ComputerHeaderContainer>
       <MobileHeaderContainer>
         <Link to="/">

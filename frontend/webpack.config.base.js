@@ -9,7 +9,7 @@ const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 
 module.exports = {
   target: "web",
-  entry: path.resolve(__dirname, "./src/index.js"),
+  entry: path.resolve(__dirname, "./src/index.tsx"),
   output: {
     path: path.join(__dirname, "./build"),
     publicPath: "/",
@@ -17,7 +17,17 @@ module.exports = {
     clean: true,
   },
   resolve: {
-    extensions: [".js", ".jsx", ".ts", ".tsx", ".json", ".css", ".less"],
+    extensions: [
+      ".js",
+      ".jsx",
+      ".ts",
+      ".tsx",
+      ".json",
+      ".css",
+      ".less",
+      ".ts",
+      ".tsx",
+    ],
     alias: {
       "@": resolve("./src"),
     },
@@ -37,6 +47,11 @@ module.exports = {
   ],
   module: {
     rules: [
+      {
+        test: /\.tsx?$/,
+        use: "ts-loader",
+        exclude: /node_modules/,
+      },
       {
         test: /\.js$/i,
         exclude: /node_modules/,

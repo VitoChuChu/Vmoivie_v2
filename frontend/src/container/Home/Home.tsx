@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Col, Row } from "antd";
-import FullScreenCarousel from "../../components/FullScreenCarousel/FullScreenCarousel";
-import GenreButton from "../../components/GenreButton/GenreButton";
-import SwiperComp from "../../components/SwiperComp/SwiperCompV6";
+import FullScreenCarousel from "../../components/compose/FullScreenCarousel/FullScreenCarousel";
+import GenreButton from "../../components/compose/GenreButton/GenreButton";
+import SwiperComp from "../../components/compose/SwiperComp/SwiperCompV6";
 import styled from "styled-components";
-import PropTypes from "prop-types";
 
 import {
   fetchNowPlayingMovies,
@@ -23,16 +22,31 @@ const H1 = styled.h1`
   }
 `;
 
-const Home = ({ scrollToTop }) => {
-  const [nowM, setNowM] = useState([]);
-  const [genres, setGenres] = useState([]);
-  const [movieByGenre, setMovieByGenre] = useState([]);
-  const [popM, setPopM] = useState([]);
-  const [upM, setUpM] = useState([]);
+interface HomeProps {
+  scrollToTop: () => void;
+}
 
-  Home.propTypes = {
-    scrollToTop: PropTypes.func,
-  };
+interface Movie {
+  id: number;
+  title: string;
+  backdrop_path: string;
+  poster_path: string;
+  overview: string;
+  vote_average: number;
+  release_date: string;
+}
+
+interface Genre {
+  id: number;
+  name: string;
+}
+
+const Home: React.FC<HomeProps> = ({ scrollToTop }) => {
+  const [nowM, setNowM] = useState<Movie[]>([]);
+  const [genres, setGenres] = useState<Genre[]>([]);
+  const [movieByGenre, setMovieByGenre] = useState<Movie[]>([]);
+  const [popM, setPopM] = useState<Movie[]>([]);
+  const [upM, setUpM] = useState<Movie[]>([]);
 
   useEffect(() => {
     const fetchAPI = async () => {
@@ -45,7 +59,7 @@ const Home = ({ scrollToTop }) => {
     fetchAPI();
   }, []);
 
-  const handleGenreClick = async (genre_id) => {
+  const handleGenreClick = async (genre_id: number) => {
     setMovieByGenre(await fetchMovieByGenre(genre_id));
   };
 

@@ -1,17 +1,21 @@
 import React from "react";
 import { Modal } from "antd";
 import ReactPlayer from "react-player";
-import PropTypes from "prop-types";
 
-const TrailerModal = ({ isModalOpen, video, handleCancel, detail }) => {
+interface TrailerModalProps {
+  isModalOpen: boolean;
+  video: { key: string };
+  handleCancel: () => void;
+  detail: { title: string };
+}
+
+const TrailerModal: React.FC<TrailerModalProps> = ({
+  isModalOpen,
+  video,
+  handleCancel,
+  detail,
+}) => {
   const youtubeUrl = "https://www.youtube.com/watch?v=";
-
-  TrailerModal.propTypes = {
-    isModalOpen: PropTypes.bool,
-    handleCancel: PropTypes.func,
-    video: PropTypes.object,
-    detail: PropTypes.object,
-  };
 
   return (
     <Modal

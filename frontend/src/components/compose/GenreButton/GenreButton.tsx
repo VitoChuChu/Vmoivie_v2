@@ -1,7 +1,6 @@
 import React from "react";
 import { Button } from "antd";
 import styled from "styled-components";
-import PropTypes from "prop-types";
 
 const GenreButtonContainer = styled.div`
   display: flex;
@@ -27,12 +26,20 @@ const H1 = styled.h1`
   }
 `;
 
-const GenreButton = ({ genres, handleGenreClick }) => {
-  GenreButton.propTypes = {
-    genres: PropTypes.array,
-    handleGenreClick: PropTypes.func,
-  };
+interface Genre {
+  id: number;
+  name: string;
+}
 
+interface GenreButtonProps {
+  genres: Genre[];
+  handleGenreClick: (id: number) => void;
+}
+
+const GenreButton: React.FC<GenreButtonProps> = ({
+  genres,
+  handleGenreClick,
+}) => {
   return (
     <GenreButtonContainer>
       <H1>Which genre you wanna to have?</H1>

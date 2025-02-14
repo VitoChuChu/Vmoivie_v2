@@ -1,10 +1,8 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Row, Col, Alert } from "antd";
 import styled from "styled-components";
-import PropTypes from "prop-types";
-import axios from "axios";
 import { login } from "../../service/DB_API";
 
 const CcRow = styled(Row)`
@@ -20,18 +18,23 @@ const StyledH1 = styled.h1`
   color: #f4c10f;
 `;
 
-const Login = ({ loginStatusHandler, navigate }) => {
-  const [enterEmail, setEnterEmail] = useState("");
-  const [enterPassword, setEnterPassword] = useState("");
-  const [loginResult, setLoginResult] = useState(true);
+interface LoginProps {
+  loginStatusHandler: () => void;
+}
 
-  Login.propTypes = {
-    loginStatusHandler: PropTypes.func,
-    navigate: PropTypes.func,
-  };
+interface LoginConfig {
+  enterEmail: string;
+  enterPassword: string;
+}
+
+const Login: React.FC<LoginProps> = ({ loginStatusHandler }) => {
+  const [enterEmail, setEnterEmail] = useState<string>("");
+  const [enterPassword, setEnterPassword] = useState<string>("");
+  const [loginResult, setLoginResult] = useState<boolean>(true);
+  const navigate = useNavigate();
 
   const onSubmitLogin = async () => {
-    const config = {
+    const config: LoginConfig = {
       enterEmail: enterEmail,
       enterPassword: enterPassword,
     };
@@ -58,6 +61,7 @@ const Login = ({ loginStatusHandler, navigate }) => {
           className="login-form"
           requiredMark={false}
           layout="vertical"
+          onFinish={onSubmitLogin}
         >
           <Form.Item
             label={
@@ -112,7 +116,6 @@ const Login = ({ loginStatusHandler, navigate }) => {
               htmlType="submit"
               className="login-form-button"
               style={{ margin: "0.5rem 0.5rem 0 0" }}
-              onClick={onSubmitLogin}
               data-testid="login"
             >
               Login

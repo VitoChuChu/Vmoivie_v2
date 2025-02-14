@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import PropTypes from "prop-types";
 
 const CccDiv = styled.div`
   display: flex;
@@ -12,7 +11,10 @@ const CccDiv = styled.div`
   margin: 0 auto;
 `;
 
-const StyledImg = styled.img`
+const StyledImg = styled.img.attrs((props: { src: string; alt: string }) => ({
+  src: props.src,
+  alt: props.alt,
+}))`
   width: 13vw;
   height: auto;
   border-radius: 5%;
@@ -41,22 +43,39 @@ const StyledLink = styled(Link)`
   padding: 0;
 `;
 
-const WishlistCards = ({ item, scrollToTop }) => {
-  WishlistCards.propTypes = {
-    item: PropTypes.object,
-    setLike: PropTypes.func,
-    scrollToTop: PropTypes.func,
+interface Movie {
+  id: number;
+  title: string;
+  poster_path: string;
+  vote_average: number;
+}
+
+interface MoviesCardProps {
+  item: Movie;
+  scrollToTop: () => void;
+}
+
+const MoviesCard: React.FC<MoviesCardProps> = ({ item, scrollToTop }) => {
+  const onClickFunction = () => {
+    scrollToTop();
   };
 
   return (
     <CccDiv>
-      <StyledLink to={`/filmPage/${item.movieID}`} onClick={scrollToTop}>
-        <StyledImg src={item.posterPath} alt={item.title} />
+      <StyledLink
+        to={`/filmPage/${item.id}`}
+        onClick={onClickFunction}
+        data-testid="movieCard"
+      >
+        <StyledImg src={item.poster_path} alt={item.title} />
         <h3 style={{ color: "white", margin: "0" }}>{item.title}</h3>
-        <p style={{ color: "white" }}>{item.releaseDate}</p>
+        <p style={{ color: "white" }}>
+          <strong style={{ color: "#f4c10f", margin: "0" }}>Rated: </strong>
+          {item.vote_average}
+        </p>
       </StyledLink>
     </CccDiv>
   );
 };
 
-export default WishlistCards;
+export default MoviesCard;

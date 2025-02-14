@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Col, Row } from "antd";
 import styled from "styled-components";
-import WishlistCards from "../../components/Cards/WishlistCards";
-import notLoginImage from "../../images/loginImg.svg";
-import emptyImage from "../../images/emptyImg.svg";
-import PropTypes from "prop-types";
-import axios from "axios";
+import WishlistCards from "../../components/compose/Cards/WishlistCards";
 import { getWishList } from "../../service/DB_API";
+
+const notLoginImage = require("../../images/loginImg.svg") as string;
+const emptyImage = require("../../images/emptyImg.svg") as string;
 
 const CcRow = styled(Row)`
   display: flex;
@@ -28,14 +27,23 @@ const FlexStartCRow = styled(Row)`
   align-items: flex-start;
 `;
 
-const Wishlist = ({ scrollToTop }) => {
-  const [movies, setMovies] = useState([]);
-  const [loginStatus, setLoginStatus] = useState(false);
-  const userToken = localStorage.getItem("token");
+interface WishlistProps {
+  scrollToTop: () => void;
+}
 
-  Wishlist.propTypes = {
-    scrollToTop: PropTypes.func,
-  };
+interface Movie {
+  movieID: number;
+  title: string;
+  poster_path: string;
+  vote_average: number;
+  posterPath: string;
+  releaseDate: string;
+}
+
+const Wishlist: React.FC<WishlistProps> = ({ scrollToTop }) => {
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [loginStatus, setLoginStatus] = useState<boolean>(false);
+  const userToken = localStorage.getItem("token");
 
   const loginStatusHandler = () => {
     if (userToken != null) {
@@ -45,21 +53,20 @@ const Wishlist = ({ scrollToTop }) => {
 
   const getUserWishlistMovies = async () => {
     if (userToken != null) {
-      const header = { Authorization: userToken };
-      const data = await getWishList(header);
-      // console.log(data);
-      // const data = await axios(
-      //   "http://localhost:8080/filmpage/getWishlist",
-      //   config
-      // );
-      // return data.data;
+      const data = await getWishList(userToken);
+      console.log("data", data);
+      return data;
     }
+    return [] as Movie[];
   };
 
   useEffect(() => {
     loginStatusHandler();
     const fetchAPI = async () => {
-      setMovies(await getUserWishlistMovies());
+      const movies = await getUserWishlistMovies();
+      if (movies) {
+        setMovies(movies);
+      }
     };
     fetchAPI();
   }, []);
@@ -67,7 +74,7 @@ const Wishlist = ({ scrollToTop }) => {
   return (
     <CcRow>
       {loginStatus ? (
-        movies.length != 0 ? (
+        movies.length !== 0 ? (
           <Col span={23}>
             <Col span={24} style={{ height: "15vh" }}></Col>
             <FlexStartCRow>

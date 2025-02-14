@@ -11,7 +11,10 @@ const CccDiv = styled.div`
   margin: 0 auto;
 `;
 
-const StyledImg = styled.img`
+const StyledImg = styled.img.attrs((props: { src: string; alt: string }) => ({
+  src: props.src,
+  alt: props.alt,
+}))`
   width: 13vw;
   height: auto;
   border-radius: 50%;
@@ -35,11 +38,15 @@ const StyledImg = styled.img`
   }
 `;
 
-const CastCards = ({ item }) => {
-  CastCards.propTypes = {
-    item: PropTypes.object,
+interface CastCardProps {
+  item: {
+    profile_path: string;
+    name: string;
+    character: string;
   };
+}
 
+const CastCards: React.FC<CastCardProps> = ({ item }) => {
   return (
     <CccDiv>
       <StyledImg src={item.profile_path} alt={item.name} />
@@ -50,6 +57,14 @@ const CastCards = ({ item }) => {
       </p>
     </CccDiv>
   );
+};
+
+CastCards.propTypes = {
+  item: PropTypes.shape({
+    profile_path: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    character: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 export default CastCards;

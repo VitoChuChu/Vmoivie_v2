@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Row, Col, Alert } from "antd";
 import styled from "styled-components";
-import PropTypes from "prop-types";
 import { register } from "../../service/DB_API";
 
 const CcRow = styled(Row)`
@@ -19,15 +18,16 @@ const StyledH1 = styled.h1`
   color: #f4c10f;
 `;
 
-const Register = ({ loginStatusHandler }) => {
-  const [userName, setUserName] = useState("");
-  const [userEmail, setUserEmail] = useState("");
-  const [userPassword, setUserPassword] = useState("");
-  const [description, setDescription] = useState("");
+interface RegisterProps {
+  loginStatusHandler: () => void;
+}
+
+const Register: React.FC<RegisterProps> = ({ loginStatusHandler }) => {
+  const [userName, setUserName] = useState<string>("");
+  const [userEmail, setUserEmail] = useState<string>("");
+  const [userPassword, setUserPassword] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
   const navigate = useNavigate();
-  Register.propTypes = {
-    loginStatusHandler: PropTypes.func,
-  };
 
   const onSubmitRegister = async () => {
     const config = {
@@ -37,7 +37,7 @@ const Register = ({ loginStatusHandler }) => {
     };
     const result = await register(config);
     if (!result) return;
-    if (result && result === "User exist") {
+    if (result === "User exist") {
       setDescription("User exist");
       return;
     }
@@ -59,9 +59,7 @@ const Register = ({ loginStatusHandler }) => {
           className="login-form"
           requiredMark={false}
           layout="vertical"
-          onFinish={() => {
-            onSubmitRegister();
-          }}
+          onFinish={onSubmitRegister}
           onFinishFailed={() => {
             setDescription("Information incorrect");
           }}
@@ -80,11 +78,11 @@ const Register = ({ loginStatusHandler }) => {
               },
               {
                 min: 3,
-                message: "At most for 3 character.",
+                message: "At least 3 characters.",
               },
               {
                 max: 30,
-                message: "At most for 8 character.",
+                message: "At most 30 characters.",
               },
               {
                 pattern: /^[^\s]*$/,
@@ -150,11 +148,11 @@ const Register = ({ loginStatusHandler }) => {
               },
               {
                 min: 4,
-                message: "At least to have 4 character.",
+                message: "At least 4 characters.",
               },
               {
                 max: 8,
-                message: "At most for 8 character.",
+                message: "At most 8 characters.",
               },
               {
                 pattern: /^[^\s]*$/,

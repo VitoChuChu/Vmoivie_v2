@@ -1,4 +1,5 @@
 import axios from "axios";
+import { FetchDataConfig } from "../interface/fetchData";
 
 const env = process.env.NODE_ENV;
 let location = "";
@@ -16,22 +17,22 @@ switch (env) {
 const TMDB_BASE_URL = `${location}/fetchTMDB`;
 const DB_BASE_URL = `${location}`;
 
-export const fetchData = async (
+export const fetchData = async ({
   url,
   method = "get",
   data = {},
   source = "TMDB",
-  header = {
+  headers = {
     "Content-Type": "application/json",
-  }
-) => {
+  } as { [key: string]: string },
+}: FetchDataConfig): Promise<any> => {
   try {
     const BASE_URL = source === "TMDB" ? TMDB_BASE_URL : DB_BASE_URL;
     const response = await axios({
       url: `${BASE_URL}/${url}`,
       method,
-      header: header,
-      data: data,
+      headers,
+      data,
     });
     return response.data;
   } catch (error) {
