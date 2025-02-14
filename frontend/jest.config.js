@@ -19,7 +19,7 @@ module.exports = {
   automock: false,
 
   // The paths to modules that run some code to configure or set up the testing environment before each test
-  setupFiles: ["./jestSetting/setupFile.js", "jest-localstorage-mock"],
+  setupFiles: ["./jestSetting/setupFile.js"],
   // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
   moduleNameMapper: {
     ".+\\.(css|styl|less|sass|scss)$": "identity-obj-proxy",
