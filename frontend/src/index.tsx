@@ -12,7 +12,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
   min-width: 100%;
   width: 100%;
-  background-color: #1a1a1a;
+  height:100%;
+  padding: 0;
+  margin: 0;
+  background-color: rgb(0, 0, 0);
   scroll-behavior: smooth;
 }
 `;

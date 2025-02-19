@@ -2,50 +2,14 @@ import React from "react";
 import { Link } from "react-router-dom";
 import ReactStars from "react-rating-stars-component";
 import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/swiper.min.css";
-import "swiper/components/navigation/navigation.min.css";
-
-import styled from "styled-components";
 import SwiperCore, { Navigation } from "swiper/core";
+import { CenterCenterRow, CenterCenterCol } from "../../atoms/grid/grid";
+import { SwiperImg } from "../../atoms/image/image";
+import { MovieTitle } from "../../atoms/text/text";
+import { Movie } from "../../../interface/movie";
+
+import "swiper/swiper.min.css";
 SwiperCore.use([Navigation]);
-
-const MovieContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-`;
-
-const Img = styled.img.attrs((props: { src: string; alt: string }) => ({
-  className: "img-fluid blur",
-  src: props.src,
-  alt: props.alt,
-}))`
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: center;
-`;
-
-const Title = styled.h1.attrs(
-  (props: { className?: string; children?: React.ReactNode }) => ({
-    className: props.className,
-    children: props.children,
-  })
-)`
-  color: white;
-  font-size: 1.1rem;
-  margin: 0;
-`;
-
-interface Movie {
-  id: number;
-  title: string;
-  poster_path: string;
-  vote_average: number;
-}
 
 interface SwiperCompProps {
   items: Movie[];
@@ -54,9 +18,8 @@ interface SwiperCompProps {
 
 const SwiperComp: React.FC<SwiperCompProps> = ({ items, scrollToTop }) => {
   return (
-    <div>
+    <>
       <Swiper
-        style={{ zIndex: "0" }}
         spaceBetween={20}
         loop={false}
         navigation={true}
@@ -82,37 +45,47 @@ const SwiperComp: React.FC<SwiperCompProps> = ({ items, scrollToTop }) => {
             spaceBetween: 20,
           },
         }}
-        className="mySwiper"
       >
         {items.map((item) => {
           return (
             <SwiperSlide key={item.id}>
-              <MovieContainer>
-                <Link to={`/filmPage/${item.id}`} onClick={scrollToTop}>
-                  <Img
-                    className="img-fluid blur"
-                    src={item.poster_path}
-                    alt={item.title}
-                  />
-                </Link>
-                <Title className="textPos text-center">{item.title}</Title>
-                <p style={{ margin: "0", color: "white" }}>
-                  <strong style={{ color: "#f4c10f" }}>Rated: </strong>
-                  {item.vote_average}
-                </p>
-                <ReactStars
-                  count={10}
-                  value={item.vote_average}
-                  size={15}
-                  isHalf={true}
-                  edit={false}
-                ></ReactStars>
-              </MovieContainer>
+              <CenterCenterRow>
+                <CenterCenterCol span={24}>
+                  <Link to={`/filmPage/${item.id}`} onClick={scrollToTop}>
+                    <SwiperImg src={item.poster_path} alt={item.title} />
+                  </Link>
+                </CenterCenterCol>
+                <CenterCenterCol span={24}>
+                  <MovieTitle>{item.title}</MovieTitle>
+                </CenterCenterCol>
+                <CenterCenterCol span={24}>
+                  <p style={{ margin: "0", color: "white" }}>
+                    <strong style={{ color: "#f4c10f" }}>Rated: </strong>
+                    {item.vote_average}
+                  </p>
+                </CenterCenterCol>
+                <CenterCenterCol
+                  span={24}
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <ReactStars
+                    count={10}
+                    value={item.vote_average}
+                    size={15}
+                    isHalf={true}
+                    edit={false}
+                  ></ReactStars>
+                </CenterCenterCol>
+              </CenterCenterRow>
             </SwiperSlide>
           );
         })}
       </Swiper>
-    </div>
+    </>
   );
 };
 

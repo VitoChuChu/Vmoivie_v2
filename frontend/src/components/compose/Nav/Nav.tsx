@@ -1,64 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { Layout, Menu, Button, Drawer } from "antd";
-import { CloseOutlined, MenuOutlined } from "@ant-design/icons";
+import { Row, Col, Menu, Image, Drawer, Button } from "antd";
+import { MenuOutlined } from "@ant-design/icons";
+import { StyledH1 } from "../../atoms/text/text";
 
-const logo = require("../../../images/VmovieLogoYS.svg") as string;
-
-const { Header } = Layout;
-const ComputerHeaderContainer = styled.div`
-  display: flex;
-  width: 100vw;
-  height: 64px;
-  align-items: center;
-  background-color: #1a1a1a;
-  padding: 0 20px;
-  overflow: hidden;
-  position: fixed;
-  top: 0;
-  z-index: 1;
-  @media screen and (min-width: 767px) {
-    display: flex;
-  }
-  @media screen and (max-width: 768px) {
-    display: none;
-  }
-`;
-
-const MobileHeaderContainer = styled.div`
-  width: 100vw;
-  overflow: hidden;
-  position: fixed;
-  top: 0;
-  z-index: 1;
-  @media screen and (min-width: 767px) {
-    display: none;
-  }
-  @media screen and (max-width: 768px) {
-    display: flex;
-    height: 64px;
-    align-items: center;
-    justify-content: space-evenly;
-    background-color: #1a1a1a;
-  }
-`;
-
-const StyledHeader = styled(Header)`
-  background-color: "#1a1a1a";
-  padding: 0;
-`;
-
-const StyledH1 = styled.h1`
-  flex-grow: 2;
-  color: #f4c10f;
-  font-size: 1.25rem;
-  margin: 0;
-  padding: 0 1rem;
-  text-align: end;
-`;
+const logo = require("@/images/VmovieLogoYS.svg") as string;
 
 const StyledMenu = styled(Menu)`
+  &.ant-menu-dark.ant-menu-horizontal {
+    background-color: transparent;
+    border-bottom: none;
+  }
   &.ant-menu-dark.ant-menu-horizontal > .ant-menu-item:hover {
     background-color: transparent;
   }
@@ -67,123 +20,129 @@ const StyledMenu = styled(Menu)`
   }
 `;
 
+const UserName = styled(StyledH1)`
+  margin: 0;
+  align-self: center;
+`;
+
 interface NavProps {
   loginStatus: boolean;
   loginStatusHandler: () => void;
 }
 
 const Nav: React.FC<NavProps> = ({ loginStatus, loginStatusHandler }) => {
-  const [open, setOpen] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
   const navigate = useNavigate();
   const userName = localStorage.getItem("userName");
 
-  const showDrawer = () => {
-    setOpen(true);
-  };
-
-  const onClose = () => {
-    setOpen(false);
-  };
-
-  interface MenuItem {
+  interface MenuItemProps {
     label: React.ReactNode;
     key: string;
     onClick?: () => void;
   }
 
-  const items: MenuItem[] = [
+  const items: MenuItemProps[] = [
     {
-      label: (
-        <Link to="/" onClick={onClose}>
-          Home
-        </Link>
-      ),
+      label: <Link to="/">Home</Link>,
       key: "1",
     },
     {
-      label: (
-        <Link to="/wishlist" onClick={onClose}>
-          Wishlist
-        </Link>
-      ),
+      label: <Link to="/wishlist">Wishlist</Link>,
       key: "2",
     },
+    !loginStatus
+      ? {
+          label: <Link to="/login">Login</Link>,
+          key: "3",
+        }
+      : {
+          label: "Logout",
+          key: "4",
+          onClick: () => {
+            localStorage.removeItem("token");
+            localStorage.removeItem("userName");
+            loginStatusHandler();
+            navigate("/");
+          },
+        },
   ];
 
-  if (!loginStatus) {
-    items.push({
-      label: (
-        <Link to="/login" onClick={onClose}>
-          Login
-        </Link>
-      ),
-      key: "3",
-    });
-  } else {
-    items.push({
-      label: "Logout",
-      key: "4",
-      onClick: () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userName");
-        loginStatusHandler();
-        onClose();
-        navigate("/");
-      },
-    });
-  }
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
-  return (
-    <div>
-      <ComputerHeaderContainer>
-        <Link to="/">
-          <img src={logo} alt="Vmovie" width="120" />
-        </Link>
-        <StyledHeader>
+  const showDrawer = () => {
+    setVisible(true);
+  };
+  const onClose = () => {
+    setVisible(false);
+  };
+
+  const mobileContent = (items: MenuItemProps[], visible: boolean) => {
+    return (
+      <Col span={4}>
+        <Button ghost icon={<MenuOutlined />} onClick={showDrawer} />
+        <Drawer title="Menu" placement="top" onClose={onClose} open={visible}>
+          <StyledMenu
+            theme="light"
+            mode="vertical"
+            defaultSelectedKeys={["1"]}
+            items={items}
+          />
+        </Drawer>
+      </Col>
+    );
+  };
+
+  const nonMobileContent = (
+    items: MenuItemProps[],
+    userName: string | null
+  ) => {
+    return (
+      <>
+        <Col span={15}>
           <StyledMenu
             theme="dark"
             mode="horizontal"
+            defaultSelectedKeys={["1"]}
             style={{
-              fontSize: "1.25rem",
+              fontSize: "1.5rem",
               width: "50vw",
-              backgroundColor: "#1a1a1a",
             }}
             items={items}
-          ></StyledMenu>
-        </StyledHeader>
-        {userName ? <StyledH1>Hi, {userName}</StyledH1> : null}
-      </ComputerHeaderContainer>
-      <MobileHeaderContainer>
-        <Link to="/">
-          <img src={logo} alt="Vmovie" width="120" />
-        </Link>
-        <Button type="primary" onClick={showDrawer} className="menuIcon">
-          <MenuOutlined />
-        </Button>
-        <Drawer
-          placement="top"
-          closable={true}
-          onClose={onClose}
-          closeIcon={<CloseOutlined style={{ color: "white" }} />}
-          open={open}
-          key="top"
-          height="auto"
-          drawerStyle={{ backgroundColor: "#1a1a1a" }}
-          bodyStyle={{ backgroundColor: "#1a1a1a" }}
+          />
+        </Col>
+        <Col
+          span={4}
+          style={{
+            textAlign: "right",
+          }}
         >
-          <Menu
-            theme="dark"
-            mode="vertical"
-            style={{
-              fontSize: "1.25rem",
-              width: "auto",
-              backgroundColor: "#1a1a1a",
-            }}
-            items={items}
-          ></Menu>
-        </Drawer>
-      </MobileHeaderContainer>
-    </div>
+          {userName && <UserName>Hi, {userName}</UserName>}
+        </Col>
+      </>
+    );
+  };
+
+  return (
+    <Row wrap={false}>
+      <Col style={{ padding: "0 2vw" }} lg={4} md={5} sm={20} xs={20}>
+        <Link to="/">
+          <Image src={logo} alt="Vmovie" preview={false} width="150px" />
+        </Link>
+      </Col>
+      {isMobile
+        ? mobileContent(items, visible)
+        : nonMobileContent(items, userName)}
+    </Row>
   );
 };
 

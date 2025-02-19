@@ -1,44 +1,43 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Row, Col, Alert } from "antd";
-import styled from "styled-components";
+import { LockOutlined, UserOutlined, MailOutlined } from "@ant-design/icons";
+import { Form, Input, message } from "antd";
 import { register } from "../../service/DB_API";
 
-const CcRow = styled(Row)`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  background-color: #1a1a1a;
-`;
-
-const StyledH1 = styled.h1`
-  font-size: 2rem;
-  color: #f4c10f;
-`;
+import {
+  CenterCenterRow,
+  CenterCenterCol,
+} from "../../components/atoms/grid/grid";
+import { StyledH1 } from "../../components/atoms/text/text";
+import { RegisterConfig } from "../../interface/user";
+import { CustomizeButton } from "../../components/atoms/button/CustomizeButton";
 
 interface RegisterProps {
   loginStatusHandler: () => void;
 }
 
 const Register: React.FC<RegisterProps> = ({ loginStatusHandler }) => {
-  const [userName, setUserName] = useState<string>("");
-  const [userEmail, setUserEmail] = useState<string>("");
-  const [userPassword, setUserPassword] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
+  const [messageApi, contextHolder] = message.useMessage();
+  const [inputData, setInputData] = useState<RegisterConfig>({
+    userName: "",
+    userEmail: "",
+    userPassword: "",
+  });
   const navigate = useNavigate();
-
   const onSubmitRegister = async () => {
-    const config = {
-      userName: userName,
-      userEmail: userEmail,
-      userPassword: userPassword,
-    };
-    const result = await register(config);
-    if (!result) return;
+    const result = await register(inputData);
+    if (!result) {
+      messageApi.open({
+        type: "error",
+        content: "Information Error",
+      });
+      return;
+    }
     if (result === "User exist") {
-      setDescription("User exist");
+      messageApi.open({
+        type: "error",
+        content: "User exist",
+      });
       return;
     }
     localStorage.setItem("token", result.accessToken);
@@ -47,30 +46,40 @@ const Register: React.FC<RegisterProps> = ({ loginStatusHandler }) => {
     navigate("/");
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setInputData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const labelStyle = { color: "white", fontSize: "1.25rem" };
+  const containerStyle = {
+    boxShadow: "0 0 10px 5px rgba(216, 216, 216, 0.3)",
+    padding: "1.5rem",
+    borderRadius: "16px",
+  };
+
   return (
-    <CcRow>
-      <Col span={24} style={{ height: "20vh" }}></Col>
-      <Col xs={16} sm={15} md={14} lg={13}>
+    <CenterCenterRow>
+      {contextHolder}
+
+      <CenterCenterCol span={24} style={{ height: "20vh" }}></CenterCenterCol>
+      <CenterCenterCol span={24}>
         <StyledH1>Register</StyledH1>
-      </Col>
-      <Col xs={16} sm={15} md={14} lg={13}>
+      </CenterCenterCol>
+      <CenterCenterCol xs={16} sm={12} md={10} lg={8}>
         <Form
-          name="normal_login"
-          className="login-form"
+          name="login"
           requiredMark={false}
           layout="vertical"
           onFinish={onSubmitRegister}
-          onFinishFailed={() => {
-            setDescription("Information incorrect");
-          }}
+          style={containerStyle}
         >
           <Form.Item
-            label={
-              <label style={{ color: "white", fontSize: "1.25rem" }}>
-                Name :
-              </label>
-            }
-            name="userName"
+            label={<label style={labelStyle}>Name :</label>}
+            name="name"
             rules={[
               {
                 required: true,
@@ -95,19 +104,15 @@ const Register: React.FC<RegisterProps> = ({ loginStatusHandler }) => {
             ]}
           >
             <Input
-              prefix={<UserOutlined className="site-form-item-icon" />}
+              name="userName"
+              prefix={<UserOutlined />}
               placeholder="Name"
-              onChange={(e) => setUserName(e.target.value)}
-              data-testid="Name"
+              onChange={handleInputChange}
             />
           </Form.Item>
           <Form.Item
-            label={
-              <label style={{ color: "white", fontSize: "1.25rem" }}>
-                Email :
-              </label>
-            }
-            name="userEmail"
+            label={<label style={labelStyle}>Email :</label>}
+            name="email"
             rules={[
               {
                 required: true,
@@ -128,19 +133,16 @@ const Register: React.FC<RegisterProps> = ({ loginStatusHandler }) => {
             ]}
           >
             <Input
-              prefix={<UserOutlined className="site-form-item-icon" />}
+              name="userEmail"
+              prefix={<MailOutlined />}
               placeholder="Email"
-              onChange={(e) => setUserEmail(e.target.value)}
+              onChange={handleInputChange}
               data-testid="Email"
             />
           </Form.Item>
           <Form.Item
-            label={
-              <label style={{ color: "white", fontSize: "1.25rem" }}>
-                Password :
-              </label>
-            }
-            name="userPassword"
+            label={<label style={labelStyle}>Password :</label>}
+            name="password"
             rules={[
               {
                 required: true,
@@ -165,55 +167,25 @@ const Register: React.FC<RegisterProps> = ({ loginStatusHandler }) => {
             ]}
           >
             <Input
+              name="userPassword"
               prefix={<LockOutlined className="site-form-item-icon" />}
               type="password"
               placeholder="Password"
-              onChange={(e) => setUserPassword(e.target.value)}
+              onChange={handleInputChange}
               data-testid="Password"
             />
           </Form.Item>
           <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              className="login-form-button"
-              style={{ margin: "0.5rem 0.5rem 0 0" }}
-              data-testid="register"
-            >
+            <CustomizeButton htmlType="submit" data-testid="register">
               Register
-            </Button>
+            </CustomizeButton>
             <Link to={"/login"}>
-              <Button
-                type="primary"
-                htmlType="submit"
-                className="login-form-button"
-                style={{ margin: "0.5rem 0 0 0.5rem" }}
-                data-testid="login"
-              >
-                Login
-              </Button>
+              <CustomizeButton htmlType="submit">Login</CustomizeButton>
             </Link>
           </Form.Item>
         </Form>
-        {description === "User exist" ? (
-          <Alert
-            message="Error"
-            description={description}
-            type="error"
-            showIcon
-            closable
-          />
-        ) : description === "Information incorrect" ? (
-          <Alert
-            message="Error"
-            description={description}
-            type="error"
-            showIcon
-            closable
-          />
-        ) : null}
-      </Col>
-    </CcRow>
+      </CenterCenterCol>
+    </CenterCenterRow>
   );
 };
 

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import React, { useState, useEffect, CSSProperties } from "react";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { Layout } from "antd";
 import Nav from "../components/compose/Nav/Nav";
 import FooterComp from "../components/compose/FooterComp/FooterComp";
@@ -9,8 +9,13 @@ import Login from "./Login/Login";
 import Register from "./Register/Register";
 import FilmPage from "./FilmPage/FilmPage";
 
+const { Header, Footer, Content } = Layout;
+
 const App: React.FC = () => {
   const [loginStatus, setLoginStatus] = useState<boolean>(false);
+  const [toFixFooter, setToFixFooter] = useState<boolean>(false);
+  const [isScrolled, setIsScrolled] = useState<boolean>(false);
+  const location = useLocation();
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -32,29 +37,89 @@ const App: React.FC = () => {
     loginStatusHandler();
   }, []);
 
+  useEffect(() => {
+    const currentUrl = window.location.href;
+    setToFixFooter(
+      currentUrl.includes("login") ||
+        currentUrl.includes("register") ||
+        currentUrl.includes("wishlist")
+    );
+  }, [location]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  const layoutStyle: CSSProperties = {
+    width: "100%",
+    height: "100%",
+  };
+
+  const headerStyle: CSSProperties = {
+    padding: 0,
+    background: isScrolled
+      ? "linear-gradient(to bottom, black, black)"
+      : "linear-gradient(to bottom, black, transparent)",
+    transition: "background 0.5s",
+    position: "fixed",
+    zIndex: 9,
+    width: "100%",
+  };
+
+  const contentStyle: CSSProperties = {
+    padding: "4 0 4 0",
+    backgroundColor: "rgb(0, 0, 0)",
+  };
+
+  let footerStyle: CSSProperties = {
+    backgroundColor: "rgb(35, 35, 35)",
+    padding: "0",
+    width: "100%",
+    ...(toFixFooter ? { position: "fixed", bottom: 0 } : {}),
+  };
+
   return (
-    <Layout className="layout">
-      <Nav loginStatus={loginStatus} loginStatusHandler={loginStatusHandler} />
-      <Routes>
-        <Route path="/" element={<Home scrollToTop={scrollToTop} />} />
-        <Route
-          path="/wishlist"
-          element={<Wishlist scrollToTop={scrollToTop} />}
+    <Layout style={layoutStyle}>
+      <Header style={headerStyle}>
+        <Nav
+          loginStatus={loginStatus}
+          loginStatusHandler={loginStatusHandler}
         />
-        <Route
-          path="/login"
-          element={<Login loginStatusHandler={loginStatusHandler} />}
-        />
-        <Route
-          path="/register"
-          element={<Register loginStatusHandler={loginStatusHandler} />}
-        />
-        <Route
-          path="/filmPage/:id"
-          element={<FilmPage scrollToTop={scrollToTop} />}
-        />
-      </Routes>
-      <FooterComp />
+      </Header>
+      <Content style={contentStyle}>
+        <Routes>
+          <Route path="/" element={<Home scrollToTop={scrollToTop} />} />
+          <Route
+            path="/wishlist"
+            element={<Wishlist scrollToTop={scrollToTop} />}
+          />
+          <Route
+            path="/login"
+            element={<Login loginStatusHandler={loginStatusHandler} />}
+          />
+          <Route
+            path="/register"
+            element={<Register loginStatusHandler={loginStatusHandler} />}
+          />
+          <Route
+            path="/filmPage/:id"
+            element={<FilmPage scrollToTop={scrollToTop} />}
+          />
+        </Routes>
+      </Content>
+      <Footer style={footerStyle}>
+        <FooterComp />
+      </Footer>
     </Layout>
   );
 };

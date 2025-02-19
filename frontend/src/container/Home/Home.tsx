@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Col, Row } from "antd";
+import { Col } from "antd";
+import {
+  CenterCenterRow,
+  CenterCenterCol,
+} from "../../components/atoms/grid/grid";
+import { StyledH1 } from "../../components/atoms/text/text";
 import FullScreenCarousel from "../../components/compose/FullScreenCarousel/FullScreenCarousel";
 import GenreButton from "../../components/compose/GenreButton/GenreButton";
 import SwiperComp from "../../components/compose/SwiperComp/SwiperCompV6";
-import styled from "styled-components";
-
 import {
   fetchNowPlayingMovies,
   fetchGenres,
@@ -13,32 +16,10 @@ import {
   fetchUpcomingMovies,
 } from "../../service/TMDB_API";
 
-const H1 = styled.h1`
-  color: #f4c10f;
-  font-size: 2rem;
-  text-align: center;
-  @media screen and (max-width: 768px) {
-    font-size: 1.5rem;
-  }
-`;
+import { Movie, Genre } from "../../interface/movie";
 
 interface HomeProps {
   scrollToTop: () => void;
-}
-
-interface Movie {
-  id: number;
-  title: string;
-  backdrop_path: string;
-  poster_path: string;
-  overview: string;
-  vote_average: number;
-  release_date: string;
-}
-
-interface Genre {
-  id: number;
-  name: string;
 }
 
 const Home: React.FC<HomeProps> = ({ scrollToTop }) => {
@@ -65,42 +46,35 @@ const Home: React.FC<HomeProps> = ({ scrollToTop }) => {
 
   const nowPlayingMovies = nowM.slice(0, 5);
 
+  const colStyle = {
+    padding: "0 2vw",
+  };
+
   return (
-    <div>
-      <Row
-        align="middle"
-        justify="center"
-        style={{ backgroundColor: "#1a1a1a" }}
-      >
-        <Col span={24} style={{ height: "64px" }}></Col>
-        <Col span={22} style={{ margin: "0.5rem 1rem" }} data-testid="carousel">
-          <FullScreenCarousel nowPlayingMovies={nowPlayingMovies} />
-        </Col>
-        <Col span={22} style={{ margin: "1rem" }} data-testid="genreButton">
-          <GenreButton genres={genres} handleGenreClick={handleGenreClick} />
-        </Col>
-        <Col span={22} style={{ margin: "1rem" }} data-testid="moviesByGenre">
-          <H1>Here you go</H1>
-          <SwiperComp items={movieByGenre} scrollToTop={scrollToTop} />
-        </Col>
-        <Col span={22} style={{ margin: "1rem" }} data-testid="popularMovies">
-          <H1>What hot this week</H1>
-          <SwiperComp items={popM} scrollToTop={scrollToTop} />
-        </Col>
-        <Col
-          span={22}
-          style={{ margin: "1rem" }}
-          data-testid="nowPlayingMovies"
-        >
-          <H1>Now Playing movies</H1>
-          <SwiperComp items={nowM} scrollToTop={scrollToTop} />
-        </Col>
-        <Col span={22} style={{ margin: "1rem" }} data-testid="upComingMovies">
-          <H1>Upcoming movies</H1>
-          <SwiperComp items={upM} scrollToTop={scrollToTop} />
-        </Col>
-      </Row>
-    </div>
+    <CenterCenterRow wrap={true}>
+      <CenterCenterCol span={24}>
+        <FullScreenCarousel nowPlayingMovies={nowPlayingMovies} />
+      </CenterCenterCol>
+      <Col span={24} style={colStyle}>
+        <GenreButton genres={genres} handleGenreClick={handleGenreClick} />
+      </Col>
+      <CenterCenterCol span={24} style={colStyle}>
+        <StyledH1>Here you go</StyledH1>
+        <SwiperComp items={movieByGenre} scrollToTop={scrollToTop} />
+      </CenterCenterCol>
+      <CenterCenterCol span={24} style={colStyle}>
+        <StyledH1>What hot this week</StyledH1>
+        <SwiperComp items={popM} scrollToTop={scrollToTop} />
+      </CenterCenterCol>
+      <CenterCenterCol span={24} style={colStyle}>
+        <StyledH1>Now Playing movies</StyledH1>
+        <SwiperComp items={nowM} scrollToTop={scrollToTop} />
+      </CenterCenterCol>
+      <CenterCenterCol span={24} style={colStyle}>
+        <StyledH1>Upcoming movies</StyledH1>
+        <SwiperComp items={upM} scrollToTop={scrollToTop} />
+      </CenterCenterCol>
+    </CenterCenterRow>
   );
 };
 

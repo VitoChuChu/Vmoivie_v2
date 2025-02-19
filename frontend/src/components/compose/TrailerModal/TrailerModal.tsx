@@ -24,18 +24,16 @@ const TrailerModal: React.FC<TrailerModalProps> = ({
       onCancel={handleCancel}
       footer={null}
       width="70vw"
-      bodyStyle={{ height: "70vh" }}
-      data-testid="trailerModal"
+      styles={{ body: { height: "70vh" } }}
+      destroyOnClose={true}
     >
       <ReactPlayer
-        className="react-player"
         url={youtubeUrl + video.key}
         playing
         width="100%"
         height="100%"
         controls={true}
-        muted
-      ></ReactPlayer>
+      />
     </Modal>
   );
 };

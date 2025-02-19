@@ -1,35 +1,9 @@
 import React from "react";
 import { Button } from "antd";
-import styled from "styled-components";
-
-const GenreButtonContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-`;
-
-const H1 = styled.h1`
-  color: #f4c10f;
-  font-size: 2rem;
-  text-align: center;
-  @media screen and (max-width: 768px) {
-    font-size: 1.5rem;
-  }
-`;
-
-interface Genre {
-  id: number;
-  name: string;
-}
+import { CenterCenterRow, CenterCenterCol } from "../../atoms/grid/grid";
+import { Genre } from "../../../interface/movie";
+import { StyledH1 } from "../../atoms/text/text";
+import { GenerButton } from "../../atoms/button/CustomizeButton";
 
 interface GenreButtonProps {
   genres: Genre[];
@@ -41,30 +15,23 @@ const GenreButton: React.FC<GenreButtonProps> = ({
   handleGenreClick,
 }) => {
   return (
-    <GenreButtonContainer>
-      <H1>Which genre you wanna to have?</H1>
-      <ButtonContainer>
-        {genres.map((item) => {
-          return (
-            <Button
-              ghost
-              key={item.id}
-              style={{
-                width: "128px",
-                margin: "0.25rem",
-                padding: "2.5px 8px 3.5px 8px",
-                fontSize: "1rem",
-              }}
-              onClick={() => {
-                handleGenreClick(item.id);
-              }}
-            >
-              {item.name}
-            </Button>
-          );
-        })}
-      </ButtonContainer>
-    </GenreButtonContainer>
+    <CenterCenterRow>
+      <CenterCenterCol span={24}>
+        <StyledH1>Which genre do you want to choose?</StyledH1>
+      </CenterCenterCol>
+      <CenterCenterCol span={24}>
+        {genres.map((item) => (
+          <GenerButton
+            // ghost
+            key={item.id}
+            // style={buttonStyle}
+            onClick={() => handleGenreClick(item.id)}
+          >
+            {item.name}
+          </GenerButton>
+        ))}
+      </CenterCenterCol>
+    </CenterCenterRow>
   );
 };
 

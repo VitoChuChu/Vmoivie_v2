@@ -1,38 +1,38 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Col, Row, Button, Tooltip, message } from "antd";
+import { Col, Row, Tooltip, message, Image } from "antd";
 import styled from "styled-components";
 import CastCards from "../../components/compose/Cards/CastCards";
-import TrailerModal from "../../components/compose/TrailerModal/TrailerModal";
 import MoviesCard from "../../components/compose/Cards/MoviesCard";
+import TrailerModal from "../../components/compose/TrailerModal/TrailerModal";
+import {
+  CenterCenterRow,
+  CenterCenterCol,
+} from "../../components/atoms/grid/grid";
+import { FilmPageBKG, PosterImg } from "../../components/atoms/image/image";
+import { StyledH1, TitleH1, StyledH2 } from "../../components/atoms/text/text";
+import {
+  GenerButton,
+  LikeButton,
+} from "../../components/atoms/button/CustomizeButton";
 import { MovieDetail, Cast } from "../../interface/movie";
-
-import axios from "axios";
 import {
   fetchMovieDetail,
   fetchMovieCast,
   fetchMovieVideos,
   fetchSimilarMovies,
 } from "../../service/TMDB_API";
+import {
+  checkWishList,
+  addWishList,
+  removeWishList,
+} from "../../service/DB_API";
 
 const Trailer = require("../../images/Tralier.svg") as string;
 const UnlikeImg = require("../../images/LikeT.svg") as string;
 const LikeImg = require("../../images/LikeR.svg") as string;
 
-const FilmPageBKG = styled.img.attrs((props: { src: string; alt: string }) => ({
-  src: props.src,
-  alt: props.alt,
-}))`
-  position: absolute;
-  width: 100%;
-  min-height: 100vh;
-  -o-object-fit: contain;
-  object-fit: contain;
-  z-index: 0;
-  filter: brightness(0.5) sepia(1);
-`;
-
-const FilterDiv = styled.div`
+const MaskDiv = styled.div`
   border: 2px solid rgba(107, 107, 107, 0.279);
   padding: 3rem 0;
   margin-bottom: 1rem;
@@ -40,123 +40,6 @@ const FilterDiv = styled.div`
   backdrop-filter: blur(7px);
   @media screen and (max-width: 991px) {
     padding: 1rem 0;
-  }
-`;
-
-const H1 = styled.h1`
-  color: #f4c10f;
-  font-size: 2rem;
-  text-align: center;
-  @media screen and (max-width: 768px) {
-    font-size: 1.5rem;
-  }
-`;
-
-const TitleH1 = styled.h1`
-  color: white;
-  font-size: 2rem;
-  margin: 0;
-  font-weight: 600;
-
-  @media screen and (max-width: 768px) {
-    font-size: 1.5rem;
-  }
-`;
-
-const TitleH2 = styled.h2`
-  color: #f4c10f;
-  font-size: 1.5rem;
-  margin: 0;
-  font-weight: 600;
-`;
-
-const CcRow = styled(Row)`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-`;
-
-const CcCol = styled(Col)`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-`;
-
-const SpaceAroundCol = styled(Col)`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  align-items: center;
-`;
-
-const FlexStartCRow = styled(Row)`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: flex-start;
-`;
-
-const PosterImg = styled.img<{ src: string; alt: string }>`
-  height: auto;
-  width: 22vw;
-  object-fit: contain;
-  @media screen and (max-width: 424px) {
-    width: 65vw;
-    margin: 0.5rem 0;
-  }
-  @media screen and (min-width: 425px) {
-    width: 50vw;
-    margin: 0.5rem 0;
-  }
-  @media screen and (min-width: 650px) {
-    width: 30vw;
-    margin: 0.5rem 0;
-  }
-  @media screen and (min-width: 992px) {
-    width: 22vw;
-    margin: 0.5rem 0;
-  }
-`;
-
-const StyledButton = styled(Button)`
-  color: #f4c10f;
-  border-color: #f4c10f;
-  background-color: transparent;
-  margin: 0 0.5rem 0.5rem 0.5rem;
-  &:hover {
-    border-color: #f4c10f;
-    background-color: #f4c10f;
-  }
-`;
-
-const UnLikeButton = styled(Button)`
-  width: 150px;
-  height: 60px;
-  display: inline-block;
-  background-image: url(${UnlikeImg});
-  background-repeat: no-repeat;
-  background-size: 100%;
-  background-position: center;
-  cursor: pointer;
-  &:active {
-    opacity: 0.5;
-  }
-`;
-
-const LikeButton = styled(Button)`
-  width: 150px;
-  height: 60px;
-  display: inline-block;
-  background-image: url(${LikeImg});
-  background-repeat: no-repeat;
-  background-size: 100%;
-  background-position: center;
-  cursor: pointer;
-  &:active {
-    opacity: 0.5;
   }
 `;
 
@@ -174,29 +57,7 @@ const FilmPage: React.FC<FilmPageProps> = ({ scrollToTop }) => {
   const [like, setLike] = useState(false);
   const [loginStatus, setLoginStatus] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
-
   const userToken = localStorage.getItem("token");
-
-  const checkWishlist = async (): Promise<boolean> => {
-    if (userToken != null) {
-      const config = {
-        method: "put",
-        headers: {
-          authorization: userToken,
-          "content-type": "application/json",
-        },
-        data: {
-          movieID: params.id,
-        },
-      };
-      const data = await axios(
-        "http://localhost:8080/filmpage/chechWishlist",
-        config
-      );
-      return data.data;
-    }
-    return false;
-  };
 
   const success = (text: string) => {
     messageApi.open({
@@ -205,39 +66,30 @@ const FilmPage: React.FC<FilmPageProps> = ({ scrollToTop }) => {
     });
   };
 
-  const addUserWishlist = async () => {
-    if (detail) {
-      const config = {
-        method: "post",
-        headers: {
-          authorization: userToken,
-          "content-type": "application/json",
-        },
-        data: {
-          movieID: detail.id,
-          title: detail.title,
-          release_date: detail.release_date,
-          poster_path: detail.poster_path,
-        },
-      };
-      await axios("http://localhost:8080/filmpage/addUserWishlist", config);
-      success("Added to wishlist successfully");
+  const checkWishlist = async (id: number): Promise<boolean> => {
+    if (userToken != null) {
+      const data = await checkWishList(userToken, id);
+      if (data) return data;
     }
+    return false;
+  };
+
+  const addUserWishlist = async () => {
+    if (detail && userToken != null) {
+      const config = {
+        movieID: detail.id,
+        title: detail.title,
+        release_date: detail.release_date,
+        poster_path: detail.poster_path,
+      };
+      await addWishList(userToken, config);
+    }
+    success("Added to wishlist successfully");
   };
 
   const removeUserWishlist = async () => {
-    if (detail) {
-      const config = {
-        method: "delete",
-        headers: {
-          authorization: userToken,
-          "content-type": "application/json",
-        },
-        data: {
-          movieID: detail.id,
-        },
-      };
-      await axios("http://localhost:8080/filmpage/removeUserWishlist", config);
+    if (detail && userToken != null) {
+      await removeWishList(userToken, detail.id);
       success("Removed from wishlist successfully");
     }
   };
@@ -253,15 +105,13 @@ const FilmPage: React.FC<FilmPageProps> = ({ scrollToTop }) => {
   };
 
   const checkLoginStatus = () => {
-    if (userToken != null) {
-      setLoginStatus(true);
-    }
+    if (userToken != null) setLoginStatus(true);
   };
 
   useEffect(() => {
     checkLoginStatus();
     const fetchAPI = async () => {
-      setLike(await checkWishlist());
+      setLike(await checkWishlist(Number(params.id)));
       setDetail(await fetchMovieDetail(Number(params.id)));
       setVideo(await fetchMovieVideos(Number(params.id)));
       setCasts(await fetchMovieCast(Number(params.id)));
@@ -278,7 +128,7 @@ const FilmPage: React.FC<FilmPageProps> = ({ scrollToTop }) => {
   const imgUrl_low = `https://image.tmdb.org/t/p/w780/${detail.backdrop_path}`;
 
   const genresList = detail.genres?.map((item) => (
-    <StyledButton key={item.name}>{item.name}</StyledButton>
+    <GenerButton key={item.name}>{item.name}</GenerButton>
   ));
 
   const showModal = () => {
@@ -289,62 +139,59 @@ const FilmPage: React.FC<FilmPageProps> = ({ scrollToTop }) => {
   };
 
   return (
-    <div>
-      <CcRow
-        align="middle"
-        justify="center"
-        style={{ backgroundColor: "#1a1a1a" }}
-      >
-        <Col span={24} style={{ height: "64px" }}></Col>
+    <>
+      <CenterCenterRow>
+        <Col span={24} style={{ height: "5rem" }}></Col>
         <Col span={24}>
-          <FilmPageBKG src={imgUrl_low} alt=""></FilmPageBKG>
+          <FilmPageBKG src={imgUrl_low} alt="" />
         </Col>
-        <Col span={24} style={{ margin: "1rem" }}>
-          <FilterDiv>
-            <CcRow>
-              <CcCol xs={24} lg={7}>
+        <Col span={24}>
+          <MaskDiv>
+            <CenterCenterRow>
+              <CenterCenterCol xs={24} lg={7}>
                 <PosterImg src={imgUrl} alt={detail.title} />
-              </CcCol>
+              </CenterCenterCol>
               <Col xs={22} lg={15}>
                 <Row>
                   <Col span={24}>
                     <TitleH1>{detail.title}</TitleH1>
                   </Col>
-                  <Col span={24} data-testid="genreList">
+                  <Col span={24} style={{ margin: "0 0 1.25rem 0" }}>
                     {genresList}
                   </Col>
                   <Col span={24}>
                     <Row>
-                      <Col xs={22} lg={6}>
-                        <TitleH2>Run time</TitleH2>
+                      <Col xs={24} lg={6}>
+                        <StyledH2>Run time</StyledH2>
                         <p style={{ color: "white" }}>{detail.runtime}mins</p>
                       </Col>
-                      <Col xs={22} lg={6} data-testid="releaseDate">
-                        <TitleH2>Release Date</TitleH2>
+                      <Col xs={24} lg={6}>
+                        <StyledH2>Release Date</StyledH2>
                         <p style={{ color: "white" }}>{detail.release_date}</p>
                       </Col>
-                      <Col xs={22} lg={8} data-testid="officalWebsite">
-                        <TitleH2>Offical website</TitleH2>
+                      <Col xs={24} lg={12}>
+                        <StyledH2>Offical website</StyledH2>
                         <a
                           href={detail.homepage}
                           target="_blank"
                           rel="noreferrer noopener"
                           style={{ color: "white" }}
                         >
-                          {detail.homepage}
+                          <p>{detail.homepage}</p>
                         </a>
                       </Col>
                     </Row>
                   </Col>
-                  <Col span={24} data-testid="overview">
-                    <TitleH2>Overview</TitleH2>
+                  <Col span={24}>
+                    <StyledH2>Overview</StyledH2>
                     <p style={{ color: "white" }}>{detail.overview}</p>
                   </Col>
                   {video && (
                     <Col span={24} style={{ margin: "1rem 0" }}>
-                      <img
+                      <Image
                         src={Trailer}
                         alt="Trailer"
+                        preview={false}
                         onClick={showModal}
                         style={{
                           width: "150px",
@@ -365,68 +212,82 @@ const FilmPage: React.FC<FilmPageProps> = ({ scrollToTop }) => {
                     {loginStatus ? (
                       like ? (
                         <LikeButton
+                          imgSrc={LikeImg}
                           onClick={() => {
                             likeHandler();
                           }}
-                          data-testid="likedButton"
-                        ></LikeButton>
+                        />
                       ) : (
-                        <UnLikeButton
+                        <LikeButton
+                          imgSrc={UnlikeImg}
                           onClick={() => {
                             likeHandler();
                           }}
-                          data-testid="unLikedButton"
-                        ></UnLikeButton>
+                        />
                       )
                     ) : (
                       <Tooltip placement="right" title="Please login first.">
-                        <UnLikeButton data-testid="unLikeButton"></UnLikeButton>
+                        <LikeButton imgSrc={UnlikeImg} />
                       </Tooltip>
                     )}
                   </Col>
                 </Row>
               </Col>
-            </CcRow>
-          </FilterDiv>
+            </CenterCenterRow>
+          </MaskDiv>
         </Col>
-        <SpaceAroundCol span={23}>
-          <CcRow data-testid="cast">
-            <Col span={23}>
-              <H1>Cast</H1>
+        <CenterCenterCol span={24}>
+          <CenterCenterRow>
+            <Col span={24}>
+              <StyledH1>Cast</StyledH1>
             </Col>
-            <Col span={23}>
-              <FlexStartCRow>
+            <Col span={24}>
+              <CenterCenterRow>
                 {casts.slice(0, 6).map((item) => {
                   return (
-                    <CcCol xs={22} sm={11} md={8} lg={4} key={item.id}>
+                    <CenterCenterCol
+                      xs={22}
+                      sm={11}
+                      md={8}
+                      lg={4}
+                      key={item.id}
+                      style={{ alignSelf: "center" }}
+                    >
                       <CastCards item={item} />
-                    </CcCol>
+                    </CenterCenterCol>
                   );
                 })}
-              </FlexStartCRow>
+              </CenterCenterRow>
             </Col>
-          </CcRow>
-        </SpaceAroundCol>
-        <SpaceAroundCol span={23}>
-          <CcRow data-testid="similarMovies">
-            <Col span={23}>
-              <H1>Similar Movies</H1>
+          </CenterCenterRow>
+        </CenterCenterCol>
+        <CenterCenterCol span={24}>
+          <CenterCenterRow>
+            <Col span={24}>
+              <StyledH1>Similar Movies</StyledH1>
             </Col>
-            <Col span={23}>
-              <FlexStartCRow>
+            <Col span={24}>
+              <CenterCenterRow>
                 {similarMovies.slice(0, 6).map((item) => {
                   return (
-                    <CcCol xs={22} sm={11} md={8} lg={4} key={item.id}>
+                    <CenterCenterCol
+                      xs={22}
+                      sm={11}
+                      md={8}
+                      lg={4}
+                      key={item.id}
+                      style={{ alignSelf: "center" }}
+                    >
                       <MoviesCard item={item} scrollToTop={scrollToTop} />
-                    </CcCol>
+                    </CenterCenterCol>
                   );
                 })}
-              </FlexStartCRow>
+              </CenterCenterRow>
             </Col>
-          </CcRow>
-        </SpaceAroundCol>
-      </CcRow>
-    </div>
+          </CenterCenterRow>
+        </CenterCenterCol>
+      </CenterCenterRow>
+    </>
   );
 };
 

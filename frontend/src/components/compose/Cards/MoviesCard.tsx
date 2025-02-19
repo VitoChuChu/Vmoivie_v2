@@ -1,43 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-
-const CccDiv = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  margin: 0 auto;
-`;
-
-const StyledImg = styled.img.attrs((props: { src: string; alt: string }) => ({
-  src: props.src,
-  alt: props.alt,
-}))`
-  width: 13vw;
-  height: auto;
-  border-radius: 5%;
-
-  @media screen and (max-width: 575px) {
-    width: 40vw;
-    height: auto;
-  }
-  @media screen and (min-width: 576px) {
-    width: 20vw;
-    height: auto;
-  }
-  @media screen and (min-width: 768px) {
-    width: 25vw;
-    height: auto;
-  }
-  @media screen and (min-width: 992px) {
-    width: 14vw;
-    height: auto;
-    padding: 0 5px;
-    border-radius: 10%;
-  }
-`;
+import { CenterCenterRow, CenterCenterCol } from "../../atoms/grid/grid";
+import { SmallCard } from "../../atoms/image/image";
+const unknown_movie = require("../../../images/unknown_movie.svg") as string;
 
 const StyledLink = styled(Link)`
   padding: 0;
@@ -60,21 +26,34 @@ const MoviesCard: React.FC<MoviesCardProps> = ({ item, scrollToTop }) => {
     scrollToTop();
   };
 
+  const havePhoto = () => {
+    return !item.poster_path.includes("null");
+  };
+
   return (
-    <CccDiv>
+    <CenterCenterRow>
       <StyledLink
         to={`/filmPage/${item.id}`}
         onClick={onClickFunction}
         data-testid="movieCard"
       >
-        <StyledImg src={item.poster_path} alt={item.title} />
-        <h3 style={{ color: "white", margin: "0" }}>{item.title}</h3>
-        <p style={{ color: "white" }}>
-          <strong style={{ color: "#f4c10f", margin: "0" }}>Rated: </strong>
-          {item.vote_average}
-        </p>
+        <CenterCenterCol>
+          <SmallCard
+            src={havePhoto() ? item.poster_path : unknown_movie}
+            alt={item.title}
+          />
+        </CenterCenterCol>
+        <CenterCenterCol>
+          <h3 style={{ color: "white", margin: "0" }}>{item.title}</h3>
+        </CenterCenterCol>
+        <CenterCenterCol>
+          <p style={{ color: "white" }}>
+            <strong style={{ color: "#f4c10f", margin: "0" }}>Rated: </strong>
+            {item.vote_average}
+          </p>
+        </CenterCenterCol>
       </StyledLink>
-    </CccDiv>
+    </CenterCenterRow>
   );
 };
 

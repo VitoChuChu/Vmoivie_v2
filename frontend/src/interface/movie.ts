@@ -6,6 +6,7 @@ export interface Movie {
   overview: string;
   vote_average: number;
   release_date: string;
+  movieID: number;
 }
 
 export interface MovieDetail extends Movie {
@@ -18,6 +19,8 @@ export interface MovieDetail extends Movie {
   release_date: string;
   homepage: string;
   genres: { name: string }[];
+  releaseDate: string; // From DB
+  posterPath: string; // From DB
 }
 
 export interface Genre {
@@ -30,4 +33,11 @@ export interface Cast {
   name: string;
   character: string;
   profile_path: string;
+}
+
+export interface WishlistConfig {
+  movieID: number;
+  title: string;
+  release_date: string;
+  poster_path: string;
 }

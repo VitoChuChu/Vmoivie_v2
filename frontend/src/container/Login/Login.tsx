@@ -1,42 +1,33 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Row, Col, Alert } from "antd";
-import styled from "styled-components";
+import { LockOutlined, MailOutlined } from "@ant-design/icons";
+import { Form, Input, Alert, message } from "antd";
+import {
+  CenterCenterRow,
+  CenterCenterCol,
+} from "../../components/atoms/grid/grid";
+import { CustomizeButton } from "../../components/atoms/button/CustomizeButton";
+import { StyledH1 } from "../../components/atoms/text/text";
+import { LoginConfig } from "../../interface/user";
 import { login } from "../../service/DB_API";
-
-const CcRow = styled(Row)`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  background-color: #1a1a1a;
-`;
-
-const StyledH1 = styled.h1`
-  font-size: 2rem;
-  color: #f4c10f;
-`;
 
 interface LoginProps {
   loginStatusHandler: () => void;
 }
 
-interface LoginConfig {
-  enterEmail: string;
-  enterPassword: string;
-}
-
 const Login: React.FC<LoginProps> = ({ loginStatusHandler }) => {
-  const [enterEmail, setEnterEmail] = useState<string>("");
-  const [enterPassword, setEnterPassword] = useState<string>("");
+  const [messageApi, contextHolder] = message.useMessage();
+  const [inputData, setInputData] = useState<LoginConfig>({
+    enterEmail: "",
+    enterPassword: "",
+  });
   const [loginResult, setLoginResult] = useState<boolean>(true);
   const navigate = useNavigate();
 
   const onSubmitLogin = async () => {
     const config: LoginConfig = {
-      enterEmail: enterEmail,
-      enterPassword: enterPassword,
+      enterEmail: inputData.enterEmail,
+      enterPassword: inputData.enterPassword,
     };
     const data = await login(config);
     if (data) {
@@ -45,30 +36,46 @@ const Login: React.FC<LoginProps> = ({ loginStatusHandler }) => {
       navigate("/");
       loginStatusHandler();
     } else {
+      messageApi.open({
+        type: "error",
+        content: "Information Error",
+      });
       setLoginResult(false);
     }
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setInputData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const labelStyle = { color: "white", fontSize: "1.25rem" };
+  const containerStyle = {
+    boxShadow: "0 0 10px 5px rgba(216, 216, 216, 0.3)",
+    padding: "1.5rem",
+    borderRadius: "16px",
+  };
+
   return (
-    <CcRow>
-      <Col span={24} style={{ height: "20vh" }}></Col>
-      <Col xs={16} sm={15} md={14} lg={13}>
+    <CenterCenterRow>
+      {contextHolder}
+      <CenterCenterCol span={24} style={{ height: "20vh" }}></CenterCenterCol>
+      <CenterCenterCol span={24}>
         <StyledH1>Login</StyledH1>
-      </Col>
-      <Col xs={16} sm={15} md={14} lg={13}>
+      </CenterCenterCol>
+      <CenterCenterCol xs={16} sm={12} md={10} lg={8}>
         <Form
           name="normal_login"
-          className="login-form"
           requiredMark={false}
           layout="vertical"
           onFinish={onSubmitLogin}
+          style={containerStyle}
         >
           <Form.Item
-            label={
-              <label style={{ color: "white", fontSize: "1.25rem" }}>
-                Email :
-              </label>
-            }
+            label={<label style={labelStyle}>Email :</label>}
             name="enterEmail"
             rules={[
               {
@@ -82,18 +89,15 @@ const Login: React.FC<LoginProps> = ({ loginStatusHandler }) => {
             ]}
           >
             <Input
-              prefix={<UserOutlined className="site-form-item-icon" />}
+              prefix={<MailOutlined />}
               placeholder="Email"
-              onChange={(e) => setEnterEmail(e.target.value)}
+              name="enterEmail"
+              onChange={handleInputChange}
               data-testid="Email"
             />
           </Form.Item>
           <Form.Item
-            label={
-              <label style={{ color: "white", fontSize: "1.25rem" }}>
-                Password :
-              </label>
-            }
+            label={<label style={labelStyle}>Password :</label>}
             name="enterPassword"
             rules={[
               {
@@ -103,47 +107,22 @@ const Login: React.FC<LoginProps> = ({ loginStatusHandler }) => {
             ]}
           >
             <Input
-              prefix={<LockOutlined className="site-form-item-icon" />}
+              prefix={<LockOutlined />}
               type="password"
               placeholder="Password"
-              onChange={(e) => setEnterPassword(e.target.value)}
-              data-testid="Password"
+              name="enterPassword"
+              onChange={handleInputChange}
             />
           </Form.Item>
           <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              className="login-form-button"
-              style={{ margin: "0.5rem 0.5rem 0 0" }}
-              data-testid="login"
-            >
-              Login
-            </Button>
+            <CustomizeButton htmlType="submit">Login</CustomizeButton>
             <Link to={"/register"}>
-              <Button
-                type="primary"
-                htmlType="submit"
-                className="login-form-button"
-                style={{ margin: "0.5rem 0 0 0.5rem" }}
-                data-testid="register"
-              >
-                Register
-              </Button>
+              <CustomizeButton>Register</CustomizeButton>
             </Link>
           </Form.Item>
         </Form>
-        {loginResult ? null : (
-          <Alert
-            message="Error"
-            description="Information incorrect."
-            type="error"
-            showIcon
-            closable
-          />
-        )}
-      </Col>
-    </CcRow>
+      </CenterCenterCol>
+    </CenterCenterRow>
   );
 };
 
