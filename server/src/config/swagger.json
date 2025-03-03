@@ -1,0 +1,365 @@
+{
+	"openapi": "3.0.0",
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {},
+		"securitySchemes": {
+			"jwt": {
+				"type": "http",
+				"description": "JWT Bearer authorization",
+				"scheme": "bearer",
+				"bearerFormat": "JWT"
+			}
+		}
+	},
+	"info": {
+		"title": "Project API Document",
+		"version": "1.0.0",
+		"description": "API Document for Project",
+		"contact": {}
+	},
+	"paths": {
+		"/db/checkWishlist": {
+			"post": {
+				"operationId": "FetchSimilarMovies",
+				"responses": {
+					"200": {
+						"description": "List of similar movies",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"summary": "Fetch Similar Movies",
+				"tags": [
+					"Wishtlist"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/db/getWishlist": {
+			"post": {
+				"operationId": "GetWishlist",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Wishtlist"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/db/addUserWishlist": {
+			"post": {
+				"operationId": "AddUserWishlist",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Wishtlist"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/db/removeUserWishlist": {
+			"delete": {
+				"operationId": "RemoveUserWishlist",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Wishtlist"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/db/login": {
+			"post": {
+				"operationId": "FetchSimilarMovies",
+				"responses": {
+					"200": {
+						"description": "List of similar movies",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"summary": "Fetch Similar Movies",
+				"tags": [
+					"User"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/db/register": {
+			"post": {
+				"operationId": "Register",
+				"responses": {
+					"200": {
+						"description": "User Data",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"summary": "Register User",
+				"tags": [
+					"User"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/tmdb/fetchGenerList": {
+			"get": {
+				"operationId": "FetchGenerList",
+				"responses": {
+					"200": {
+						"description": "List of genres",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"summary": "Fetch Genre List",
+				"tags": [
+					"TMDB"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/tmdb/fetchNowPlayingMovies": {
+			"get": {
+				"operationId": "FetchNowPlayingMovies",
+				"responses": {
+					"200": {
+						"description": "List of now playing movies",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"summary": "Fetch Now Playing Movies",
+				"tags": [
+					"TMDB"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/tmdb/fetchPopularMovies": {
+			"get": {
+				"operationId": "FetchPopularMovies",
+				"responses": {
+					"200": {
+						"description": "List of popular movies",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"summary": "Fetch Popular Movies",
+				"tags": [
+					"TMDB"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/tmdb/fetchUpcomingMovies": {
+			"get": {
+				"operationId": "FetchUpcomingMovies",
+				"responses": {
+					"200": {
+						"description": "List of upcoming movies",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"summary": "Fetch Upcoming Movies",
+				"tags": [
+					"TMDB"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/tmdb/fetchMovieCast": {
+			"put": {
+				"operationId": "FetchMovieCast",
+				"responses": {
+					"200": {
+						"description": "List of cast members",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"summary": "Fetch Movie Cast",
+				"tags": [
+					"TMDB"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/tmdb/fetchMovieDetail": {
+			"put": {
+				"operationId": "FetchMovieDetail",
+				"responses": {
+					"200": {
+						"description": "Movie details",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"summary": "Fetch Movie Detail",
+				"tags": [
+					"TMDB"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/tmdb/fetchMoviesByGenres": {
+			"put": {
+				"operationId": "FetchMoviesByGenres",
+				"responses": {
+					"200": {
+						"description": "List of movies by genre",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"summary": "Fetch Movies By Genres",
+				"tags": [
+					"TMDB"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/tmdb/fetchMovieVideo": {
+			"put": {
+				"operationId": "FetchMovieVideo",
+				"responses": {
+					"200": {
+						"description": "Movie video",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"summary": "Fetch Movie Video",
+				"tags": [
+					"TMDB"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/tmdb/fetchSearchMovies": {
+			"put": {
+				"operationId": "FetchSearchMovies",
+				"responses": {
+					"200": {
+						"description": "List of movies matching the search keyword",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"summary": "Fetch Search Movies",
+				"tags": [
+					"TMDB"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/tmdb/fetchSimilarMovies": {
+			"put": {
+				"operationId": "FetchSimilarMovies",
+				"responses": {
+					"200": {
+						"description": "List of similar movies",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"summary": "Fetch Similar Movies",
+				"tags": [
+					"TMDB"
+				],
+				"security": [],
+				"parameters": []
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "/"
+		}
+	]
+}

@@ -1,9 +1,9 @@
 import { fetchData } from "../utils/FetchData";
 import { FetchDataConfig } from "../interface/fetchData";
-import { LoginConfig, RegisterConfig } from "../interface/user";
+import { UserConfig } from "../interface/user";
 import { WishlistConfig } from "../interface/movie";
 
-export const login = async (req: LoginConfig) => {
+export const login = async (req: UserConfig) => {
   try {
     const config: FetchDataConfig = {
       url: "login",
@@ -19,7 +19,7 @@ export const login = async (req: LoginConfig) => {
   }
 };
 
-export const register = async (req: RegisterConfig) => {
+export const register = async (req: UserConfig) => {
   try {
     const config: FetchDataConfig = {
       url: "register",
@@ -35,14 +35,17 @@ export const register = async (req: RegisterConfig) => {
   }
 };
 
-export const getWishList = async (req: string) => {
+export const getWishList = async (userID: string) => {
   try {
     const config: FetchDataConfig = {
-      url: "filmpage/getWishlist",
-      method: "PUT",
+      url: "getWishlist",
+      method: "POST",
       source: "DB",
       headers: {
-        Authorization: req,
+        "content-type": "application/json",
+      },
+      data: {
+        userID: userID,
       },
     };
     const data = await fetchData(config);
@@ -53,17 +56,17 @@ export const getWishList = async (req: string) => {
   }
 };
 
-export const checkWishList = async (token: string, id: number) => {
+export const checkWishList = async (userID: string, id: number) => {
   try {
     const config: FetchDataConfig = {
-      url: "filmpage/chechWishlist",
-      method: "PUT",
+      url: "checkWishlist",
+      method: "POST",
       source: "DB",
       headers: {
-        Authorization: token,
         "content-type": "application/json",
       },
       data: {
+        userID: userID,
         movieID: id,
       },
     };
@@ -76,19 +79,21 @@ export const checkWishList = async (token: string, id: number) => {
 };
 
 export const addWishList = async (
-  token: string,
+  userID: string,
   movieConfig: WishlistConfig
 ) => {
   try {
     const config: FetchDataConfig = {
-      url: "filmpage/addUserWishlist",
+      url: "addUserWishlist",
       method: "POST",
       source: "DB",
       headers: {
-        Authorization: token,
         "content-type": "application/json",
       },
-      data: movieConfig,
+      data: {
+        userID: userID,
+        movieConfig,
+      },
     };
     const data = await fetchData(config);
     return data;
@@ -98,17 +103,17 @@ export const addWishList = async (
   }
 };
 
-export const removeWishList = async (token: string, id: number) => {
+export const removeWishList = async (userID: string, id: number) => {
   try {
     const config: FetchDataConfig = {
-      url: "filmpage/removeUserWishlist",
+      url: "removeUserWishlist",
       method: "DELETE",
       source: "DB",
       headers: {
-        Authorization: token,
         "content-type": "application/json",
       },
       data: {
+        userID: userID,
         movieID: id,
       },
     };

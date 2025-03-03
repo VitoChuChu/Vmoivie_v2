@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
-import { User } from "./entities/User";
-import { Wishlist } from "./entities/Wishlist";
+import { User } from "./models/User";
+import { Wishlist } from "./models/Wishlist";
 
 export const AppDataSource = new DataSource({
   type: "postgres",

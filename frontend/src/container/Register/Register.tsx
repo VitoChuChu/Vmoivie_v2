@@ -9,8 +9,10 @@ import {
   CenterCenterCol,
 } from "../../components/atoms/grid/grid";
 import { StyledH1 } from "../../components/atoms/text/text";
-import { RegisterConfig } from "../../interface/user";
+import { UserConfig } from "../../interface/user";
 import { CustomizeButton } from "../../components/atoms/button/CustomizeButton";
+
+import { clearLocalStorage } from "../../utils/localstorage";
 
 interface RegisterProps {
   loginStatusHandler: () => void;
@@ -18,10 +20,10 @@ interface RegisterProps {
 
 const Register: React.FC<RegisterProps> = ({ loginStatusHandler }) => {
   const [messageApi, contextHolder] = message.useMessage();
-  const [inputData, setInputData] = useState<RegisterConfig>({
-    userName: "",
-    userEmail: "",
-    userPassword: "",
+  const [inputData, setInputData] = useState<UserConfig>({
+    name: "",
+    email: "",
+    password: "",
   });
   const navigate = useNavigate();
   const onSubmitRegister = async () => {
@@ -40,8 +42,10 @@ const Register: React.FC<RegisterProps> = ({ loginStatusHandler }) => {
       });
       return;
     }
+    clearLocalStorage();
     localStorage.setItem("token", result.accessToken);
     localStorage.setItem("userName", result.userName);
+    localStorage.setItem("userID", result.userID);
     loginStatusHandler();
     navigate("/");
   };
@@ -71,7 +75,7 @@ const Register: React.FC<RegisterProps> = ({ loginStatusHandler }) => {
       </CenterCenterCol>
       <CenterCenterCol xs={16} sm={12} md={10} lg={8}>
         <Form
-          name="login"
+          name="register"
           requiredMark={false}
           layout="vertical"
           onFinish={onSubmitRegister}
@@ -104,7 +108,7 @@ const Register: React.FC<RegisterProps> = ({ loginStatusHandler }) => {
             ]}
           >
             <Input
-              name="userName"
+              name="name"
               prefix={<UserOutlined />}
               placeholder="Name"
               onChange={handleInputChange}
@@ -133,7 +137,7 @@ const Register: React.FC<RegisterProps> = ({ loginStatusHandler }) => {
             ]}
           >
             <Input
-              name="userEmail"
+              name="email"
               prefix={<MailOutlined />}
               placeholder="Email"
               onChange={handleInputChange}
@@ -167,7 +171,7 @@ const Register: React.FC<RegisterProps> = ({ loginStatusHandler }) => {
             ]}
           >
             <Input
-              name="userPassword"
+              name="password"
               prefix={<LockOutlined className="site-form-item-icon" />}
               type="password"
               placeholder="Password"

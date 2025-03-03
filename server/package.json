@@ -7,6 +7,7 @@
     "@types/bcrypt": "^5.0.0",
     "@types/cors": "^2.8.12",
     "@types/node": "^16.11.10",
+    "@types/swagger-ui-express": "^4.1.8",
     "ts-node": "10.7.0",
     "tslint": "^6.1.3",
     "tslint-config-prettier": "^1.18.0",
@@ -20,11 +21,16 @@
     "express": "^4.18.2",
     "express-jwt": "^7.7.7",
     "jsonwebtoken": "^8.5.1",
+    "log4js": "^6.9.1",
     "pg": "^8.4.0",
     "reflect-metadata": "^0.1.13",
+    "swagger-ui-express": "^5.0.1",
+    "tsoa": "^6.6.0",
+    "tsyringe": "^4.8.0",
     "typeorm": "0.3.10"
   },
   "scripts": {
+    "tsoa-build": "tsoa spec-and-routes",
     "typeorm": "typeorm-ts-node-commonjs",
     "tslint": "tslint --project . src/**/*.ts src/**/*.tsx",
     "start": "nodemon --watch './**/*.ts' --exec ts-node src/index.ts"

@@ -58,6 +58,7 @@ const FilmPage: React.FC<FilmPageProps> = ({ scrollToTop }) => {
   const [loginStatus, setLoginStatus] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   const userToken = localStorage.getItem("token");
+  const userID = localStorage.getItem("userID");
 
   const success = (text: string) => {
     messageApi.open({
@@ -67,29 +68,30 @@ const FilmPage: React.FC<FilmPageProps> = ({ scrollToTop }) => {
   };
 
   const checkWishlist = async (id: number): Promise<boolean> => {
-    if (userToken != null) {
-      const data = await checkWishList(userToken, id);
+    if (userID != null) {
+      const data = await checkWishList(userID, id);
       if (data) return data;
     }
     return false;
   };
 
   const addUserWishlist = async () => {
-    if (detail && userToken != null) {
+    if (detail && userID) {
       const config = {
+        userID: userID,
         movieID: detail.id,
         title: detail.title,
         release_date: detail.release_date,
         poster_path: detail.poster_path,
       };
-      await addWishList(userToken, config);
+      await addWishList(userID, config);
     }
     success("Added to wishlist successfully");
   };
 
   const removeUserWishlist = async () => {
-    if (detail && userToken != null) {
-      await removeWishList(userToken, detail.id);
+    if (detail && userID) {
+      await removeWishList(userID, detail.id);
       success("Removed from wishlist successfully");
     }
   };

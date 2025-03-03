@@ -1,57 +1,73 @@
-import { AppDataSource } from "./data-source";
-import express from "express";
-import { Express } from "express";
-import cors from "cors";
-// GET
-// POST
-import { userRegister } from "./routers/POST/userRegister";
-import { userLogin } from "./routers/POST/userLogin";
-import { addUserWishlist } from "./routers/POST/post_addUserWishlist";
-import { chechWishlist } from "./routers/POST/put_chechWishlist";
-// PUT
-import { getWishlist } from "./routers/PUT/put_UserWIshlist";
-// DELETE
-import { removeUserWishlist } from "./routers/DELETE/delete_removeUserWishlist";
+import "reflect-metadata";
+import dotenv from "dotenv";
+dotenv.config();
 
-// TMDB fetch
-import { fetchNowPlayingMovies } from "./routers/GET/fetch_NowPlayMovies";
-import { fetchGenerList } from "./routers/GET/fetch_GenreList";
-import { fetchPopularMovies } from "./routers/GET/fetch_PopularMovies";
-import { fetchUpcomingMovies } from "./routers/GET/fetch_UpcomingMovies";
-import { fetchMoviesByGenres } from "./routers/PUT/fetch_MoviesByGenres";
-import { fetchMovieDetail } from "./routers/PUT/fetch_MovieDetail";
-import { fetchMovieVideo } from "./routers/PUT/fetch_MovieVideo";
-import { fetchMovieCast } from "./routers/PUT/fetch_MovieCast";
-import { fetchSimilarMovies } from "./routers/PUT/fetch_SimilarMovies";
-import { fetchSearchMovies } from "./routers/PUT/fetch_SearchMovies";
+import { AppDataSource } from "./data-source";
+import { Express } from "express";
+import { connectLogger } from "log4js";
+import express from "express";
+import cors from "cors";
+import logger from "./utils/logger/logger";
+import swaggerUi from "swagger-ui-express";
+
+/* Config */
+import { RegisterRoutes } from "./routes/routes";
+
+/* Middleware */
+import errorHandler from "./middleware/errorHandler";
 
 const app: Express = express();
 app.use(express.json());
 app.use(cors());
 
-AppDataSource.initialize()
-  .then(async () => {
-    app.use(userRegister);
-    app.use(userLogin);
-    app.use(getWishlist);
-    app.use(addUserWishlist);
-    app.use(removeUserWishlist);
-    app.use(chechWishlist);
+const initServer = async () => {
+  logger.info("Server is starting...");
 
-    // TMDB fetch
-    app.use(fetchNowPlayingMovies);
-    app.use(fetchGenerList);
-    app.use(fetchMoviesByGenres);
-    app.use(fetchPopularMovies);
-    app.use(fetchUpcomingMovies);
-    app.use(fetchMovieDetail);
-    app.use(fetchMovieVideo);
-    app.use(fetchMovieCast);
-    app.use(fetchSimilarMovies);
-    app.use(fetchSearchMovies);
+  // Set Router
+  const createRouter = (app: any) => {
+    RegisterRoutes(app);
+  };
+  createRouter(app);
 
-    app.listen("8080", () => {
-      console.log("Server is running on port 8080");
+  // Set Swagger
+  const swaggerSpec = require("./config/swagger.json");
+  const createSwagger = (app: any) => {
+    swaggerSpec.host = process.env.PROJECT_DOMAIN;
+    swaggerSpec.schemes = ["https"];
+    swaggerSpec.servers.push({
+      url: `https://${process.env.PROJECT_DOMAIN}`,
     });
-  })
-  .catch((error) => console.log(error));
+    app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+  };
+  if (process.env.NODE_ENV !== "production") {
+    createSwagger(app);
+  }
+
+  // Set Log4js
+  app.use(
+    connectLogger(logger, {
+      level: "auto",
+      format: (req, res, format) =>
+        format(
+          `:remote-addr :method[:status][:respones-times] :url ${
+            req.is("multipart/form-data")
+              ? "fore-data"
+              : JSON.stringify(req.body)
+          }`
+        ),
+      nolog: "/.(gif|jpe?g|png)$/",
+    })
+  );
+
+  app.use(errorHandler);
+
+  AppDataSource.initialize()
+    .then(async () => {
+      app.listen("8080", () => {
+        logger.info("Server is running on port 8080");
+      });
+    })
+    .catch((error) => console.log(error));
+};
+
+initServer();

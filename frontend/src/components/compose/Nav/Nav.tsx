@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { Row, Col, Menu, Image, Drawer, Button } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
 import { StyledH1 } from "../../atoms/text/text";
+import { clearLocalStorage } from "../../../utils/localstorage";
 
 const logo = require("@/images/VmovieLogoYS.svg") as string;
 
@@ -61,8 +62,7 @@ const Nav: React.FC<NavProps> = ({ loginStatus, loginStatusHandler }) => {
           label: "Logout",
           key: "4",
           onClick: () => {
-            localStorage.removeItem("token");
-            localStorage.removeItem("userName");
+            clearLocalStorage();
             loginStatusHandler();
             navigate("/");
           },

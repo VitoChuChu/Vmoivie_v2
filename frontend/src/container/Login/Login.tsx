@@ -8,8 +8,9 @@ import {
 } from "../../components/atoms/grid/grid";
 import { CustomizeButton } from "../../components/atoms/button/CustomizeButton";
 import { StyledH1 } from "../../components/atoms/text/text";
-import { LoginConfig } from "../../interface/user";
+import { UserConfig } from "../../interface/user";
 import { login } from "../../service/DB_API";
+import { clearLocalStorage } from "../../utils/localstorage";
 
 interface LoginProps {
   loginStatusHandler: () => void;
@@ -17,22 +18,23 @@ interface LoginProps {
 
 const Login: React.FC<LoginProps> = ({ loginStatusHandler }) => {
   const [messageApi, contextHolder] = message.useMessage();
-  const [inputData, setInputData] = useState<LoginConfig>({
-    enterEmail: "",
-    enterPassword: "",
+  const [inputData, setInputData] = useState<UserConfig>({
+    email: "",
+    password: "",
   });
-  const [loginResult, setLoginResult] = useState<boolean>(true);
   const navigate = useNavigate();
 
   const onSubmitLogin = async () => {
-    const config: LoginConfig = {
-      enterEmail: inputData.enterEmail,
-      enterPassword: inputData.enterPassword,
+    const config: UserConfig = {
+      email: inputData.email,
+      password: inputData.password,
     };
     const data = await login(config);
     if (data) {
+      clearLocalStorage();
       localStorage.setItem("token", data.accessToken);
       localStorage.setItem("userName", data.userName);
+      localStorage.setItem("userID", data.userID);
       navigate("/");
       loginStatusHandler();
     } else {
@@ -40,7 +42,6 @@ const Login: React.FC<LoginProps> = ({ loginStatusHandler }) => {
         type: "error",
         content: "Information Error",
       });
-      setLoginResult(false);
     }
   };
 
@@ -76,7 +77,7 @@ const Login: React.FC<LoginProps> = ({ loginStatusHandler }) => {
         >
           <Form.Item
             label={<label style={labelStyle}>Email :</label>}
-            name="enterEmail"
+            name="email"
             rules={[
               {
                 required: true,
@@ -91,14 +92,14 @@ const Login: React.FC<LoginProps> = ({ loginStatusHandler }) => {
             <Input
               prefix={<MailOutlined />}
               placeholder="Email"
-              name="enterEmail"
+              name="email"
               onChange={handleInputChange}
               data-testid="Email"
             />
           </Form.Item>
           <Form.Item
             label={<label style={labelStyle}>Password :</label>}
-            name="enterPassword"
+            name="password"
             rules={[
               {
                 required: true,
@@ -110,7 +111,7 @@ const Login: React.FC<LoginProps> = ({ loginStatusHandler }) => {
               prefix={<LockOutlined />}
               type="password"
               placeholder="Password"
-              name="enterPassword"
+              name="password"
               onChange={handleInputChange}
             />
           </Form.Item>

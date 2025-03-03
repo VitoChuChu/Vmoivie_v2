@@ -1,0 +1,26 @@
+{
+  "entryFile": "src/index.ts",
+  "noImplicitAdditionalProperties": "throw-on-extras",
+  "controllerPathGlobs": ["src/controller/*.ts"],
+  "spec": {
+    "outputDirectory": "src/config",
+    "specVersion": 3,
+    "version": "1.0.0",
+    "name": "Project API Document",
+    "description": "API Document for Project",
+    "securityDefinitions": {
+      "jwt": {
+        "type": "http",
+        "description": "JWT Bearer authorization",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "routes": {
+    "routesDir": "src/routes",
+    "routesFileName": "routes.ts",
+    "middleware": "express",
+    "iocModule": "src/config/ioc/iocContainer.ts"
+  }
+}

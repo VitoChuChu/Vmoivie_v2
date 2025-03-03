@@ -20,21 +20,24 @@ const Wishlist: React.FC<WishlistProps> = ({ scrollToTop }) => {
   const [movies, setMovies] = useState<MovieDetail[]>([]);
   const [loginStatus, setLoginStatus] = useState<boolean>(false);
   const userToken = localStorage.getItem("token")!;
+  const userID = localStorage.getItem("userID");
 
   const loginStatusHandler = (userToken: string) => {
     if (userToken != null) setLoginStatus(true);
   };
 
-  const getUserWishlistMovies = async (userToken: string) => {
-    const data = await getWishList(userToken);
+  const getUserWishlistMovies = async () => {
+    const data = userID ? await getWishList(userID) : [];
     return data;
   };
 
   useEffect(() => {
     loginStatusHandler(userToken);
     const fetchAPI = async () => {
-      const movies = await getUserWishlistMovies(userToken);
-      if (movies) setMovies(movies);
+      if (userToken && userID) {
+        const movies = await getUserWishlistMovies();
+        if (movies) setMovies(movies);
+      }
     };
     fetchAPI();
   }, []);
