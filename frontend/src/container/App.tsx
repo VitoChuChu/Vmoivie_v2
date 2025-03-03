@@ -1,5 +1,6 @@
 import React, { useState, useEffect, CSSProperties } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { useLoadingStore } from "../store/LoadingStore";
 import { Layout } from "antd";
 import Nav from "../components/compose/Nav/Nav";
 import FooterComp from "../components/compose/FooterComp/FooterComp";
@@ -8,6 +9,7 @@ import Wishlist from "./Wishlist/Wishlist";
 import Login from "./Login/Login";
 import Register from "./Register/Register";
 import FilmPage from "./FilmPage/FilmPage";
+import LoadingMask from "../components/compose/LoadingMask/LoadingMask";
 
 const { Header, Footer, Content } = Layout;
 
@@ -16,6 +18,7 @@ const App: React.FC = () => {
   const [toFixFooter, setToFixFooter] = useState<boolean>(false);
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
   const location = useLocation();
+  const isLoading = useLoadingStore((state) => state.isLoading);
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -70,6 +73,7 @@ const App: React.FC = () => {
     background: isScrolled
       ? "linear-gradient(to bottom, black, black)"
       : "linear-gradient(to bottom, black, transparent)",
+
     transition: "background 0.5s",
     position: "fixed",
     zIndex: 9,
@@ -120,6 +124,7 @@ const App: React.FC = () => {
       <Footer style={footerStyle}>
         <FooterComp />
       </Footer>
+      {isLoading && <LoadingMask />}
     </Layout>
   );
 };
