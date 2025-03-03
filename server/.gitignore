@@ -9,3 +9,6 @@
 .env
 
 .vscode
+
+/src/config/swagger.json
+/src/routes/routes.ts

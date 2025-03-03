@@ -9,7 +9,7 @@ switch (env) {
     location = "http://localhost:8080";
     break;
   case "production":
-    location = "xxxxx";
+    location = "https://vmoivie-v2-backend.onrender.com";
     break;
   default:
     throw new Error("Can not get NODE_ENV");

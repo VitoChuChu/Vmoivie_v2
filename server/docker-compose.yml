@@ -1,3 +1,5 @@
+version: "3.8"
+
 services:
   database:
     image: postgres
@@ -6,8 +8,14 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=vmovie_docker
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    command:
+      [
+        "sh",
+        "-c",
+        "echo $DB_USERNAME && echo $DB_PASSWORD && echo $DB_NAME && postgres",
+      ]
 volumes:
   pgdata:

@@ -5,11 +5,11 @@ import { Wishlist } from "./models/Wishlist";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
-  host: "localhost",
   port: 5001,
-  username: "postgres",
-  password: "postgres",
-  database: "vmovie_docker",
+  username: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  host: process.env.DB_HOST,
   synchronize: true,
   logging: false,
   entities: [User, Wishlist],
