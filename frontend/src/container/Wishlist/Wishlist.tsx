@@ -80,7 +80,7 @@ const Wishlist: React.FC<WishlistProps> = ({ scrollToTop }) => {
 
   return (
     <CenterCenterRow>
-      <CenterCenterCol span={24} style={{ height: "15vh" }}></CenterCenterCol>
+      <CenterCenterCol span={24} style={{ height: "8vh" }}></CenterCenterCol>
       {loginStatus ? (
         movies.length !== 0 ? (
           <>

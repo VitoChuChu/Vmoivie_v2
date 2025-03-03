@@ -88,7 +88,7 @@ const Nav: React.FC<NavProps> = ({ loginStatus, loginStatusHandler }) => {
 
   const mobileContent = (items: MenuItemProps[], visible: boolean) => {
     return (
-      <Col span={4}>
+      <Col style={{ marginLeft: "auto", marginRight: "5vw" }}>
         <Button ghost icon={<MenuOutlined />} onClick={showDrawer} />
         <Drawer title="Menu" placement="top" onClose={onClose} open={visible}>
           <StyledMenu
@@ -123,7 +123,7 @@ const Nav: React.FC<NavProps> = ({ loginStatus, loginStatusHandler }) => {
         <Col
           span={4}
           style={{
-            textAlign: "right",
+            marginLeft: "auto",
           }}
         >
           {userName && <UserName>Hi, {userName}</UserName>}
@@ -134,7 +134,7 @@ const Nav: React.FC<NavProps> = ({ loginStatus, loginStatusHandler }) => {
 
   return (
     <Row wrap={false}>
-      <Col style={{ padding: "0 2vw" }} lg={4} md={5} sm={20} xs={20}>
+      <Col style={{ padding: "0 0 0 2vw" }}>
         <Link to="/">
           <Image src={logo} alt="Vmovie" preview={false} width="150px" />
         </Link>
