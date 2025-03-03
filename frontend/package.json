@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.tsx",
   "scripts": {
-    "start": "webpack serve --config ./webpack.config.dev",
+    "start": "webpack serve --config ./webpack.config.dev.ts",
     "build:dev": "webpack serve --mode development --config ./webpack.config.dev",
     "build:prod": "webpack serve --mode production --config ./webpack.config.prod"
   },
@@ -58,6 +58,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
+    "@types/webpack-dev-server": "^4.7.1",
     "antd": "^5.24.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

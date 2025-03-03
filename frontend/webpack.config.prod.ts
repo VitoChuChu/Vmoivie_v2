@@ -1,9 +1,15 @@
-const { merge } = require("webpack-merge");
-const webpackConfigBase = require("./webpack.config.base");
-const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
-const TerserPlugin = require("terser-webpack-plugin");
+import { merge } from "webpack-merge";
+import { Configuration as WebpackConfiguration } from "webpack";
+import { Configuration as WebpackDevServerConfiguration } from "webpack-dev-server";
+import CssMinimizerPlugin from "css-minimizer-webpack-plugin";
+import TerserPlugin from "terser-webpack-plugin";
+import webpackConfigBase from "./webpack.config.base";
 
-module.exports = merge(webpackConfigBase, {
+interface Configuration extends WebpackConfiguration {
+  devServer?: WebpackDevServerConfiguration;
+}
+
+const configuration: Configuration = merge(webpackConfigBase, {
   mode: "production",
   optimization: {
     minimizer: [
@@ -19,3 +25,5 @@ module.exports = merge(webpackConfigBase, {
     ],
   },
 });
+
+export default configuration;

@@ -1,13 +1,11 @@
-const path = require("path");
-const resolve = (targetPath) => {
-  return path.resolve(__dirname, "..", targetPath);
-};
-const MiniCssExtractPlugin = require("mini-css-extract-plugin"); // CSS獨立檔案
-const HtmlWebpackPlugin = require("html-webpack-plugin"); // 最小化html
-const ESLintPlugin = require("eslint-webpack-plugin");
-const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+import path from "path";
+import MiniCssExtractPlugin from "mini-css-extract-plugin";
+import HtmlWebpackPlugin from "html-webpack-plugin";
+import ESLintPlugin from "eslint-webpack-plugin";
+import CssMinimizerPlugin from "css-minimizer-webpack-plugin";
+import { Configuration } from "webpack";
 
-module.exports = {
+const config: Configuration = {
   target: "web",
   entry: path.resolve(__dirname, "./src/index.tsx"),
   output: {
@@ -138,3 +136,5 @@ module.exports = {
   // 取消size過大提示
   performance: { hints: false },
 };
+
+export default config;
