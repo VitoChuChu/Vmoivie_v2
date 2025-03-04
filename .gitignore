@@ -1,0 +1,15 @@
+-- frontend
+frontend/node_modules
+frontend/build
+frontend/coverage
+frontend/.env
+
+-- backend
+server/.idea/
+server/.vscode/
+server/node_modules/
+server/build/
+server/tmp/
+server/temp/
+server/.env
+server/config/
