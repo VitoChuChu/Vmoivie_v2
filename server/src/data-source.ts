@@ -5,7 +5,7 @@ import { Wishlist } from "./models/Wishlist";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
-  port: 5001,
+  port: Number(process.env.DB_PORT),
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
@@ -15,4 +15,5 @@ export const AppDataSource = new DataSource({
   entities: [User, Wishlist],
   migrations: [],
   subscribers: [],
+  ssl: true,
 });

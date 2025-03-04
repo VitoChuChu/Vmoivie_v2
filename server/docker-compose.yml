@@ -11,11 +11,7 @@ services:
       - POSTGRES_USER=${DB_USERNAME}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${DB_NAME}
-    command:
-      [
-        "sh",
-        "-c",
-        "echo $DB_USERNAME && echo $DB_PASSWORD && echo $DB_NAME && postgres",
-      ]
+    restart: always
+
 volumes:
   pgdata:
