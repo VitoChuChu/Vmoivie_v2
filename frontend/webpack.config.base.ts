@@ -36,7 +36,7 @@ const config: Configuration = {
     }),
     new HtmlWebpackPlugin({
       title: "Vmovie New",
-      template: path.resolve(__dirname, "./src/template/index.html"),
+      template: path.resolve(__dirname, "./src/public/index.html"),
       favicon: "./src/images/icon.png",
       filename: "index.html",
       inject: "body",
