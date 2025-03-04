@@ -1,5 +1,5 @@
 import React, { useState, useEffect, CSSProperties } from "react";
-import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import { useLoadingStore } from "../store/LoadingStore";
 import { Layout } from "antd";
 import Nav from "../components/compose/Nav/Nav";

@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
+import { HashRouter } from "react-router-dom";
 import App from "./container/App";
 import { createGlobalStyle } from "styled-components";
 
@@ -25,10 +25,10 @@ const rootElement = document.getElementById("root");
 if (rootElement) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
-    <BrowserRouter>
+    <HashRouter>
       <GlobalStyle />
       <App />
-    </BrowserRouter>
+    </HashRouter>
   );
 } else {
   console.error("Root element not found");

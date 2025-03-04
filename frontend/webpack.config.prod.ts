@@ -11,6 +11,9 @@ interface Configuration extends WebpackConfiguration {
 
 const configuration: Configuration = merge(webpackConfigBase, {
   mode: "production",
+  output: {
+    publicPath: "/Vmoivie_v2/",
+  },
   optimization: {
     minimizer: [
       new CssMinimizerPlugin(),

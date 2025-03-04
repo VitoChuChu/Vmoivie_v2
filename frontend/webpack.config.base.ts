@@ -10,7 +10,7 @@ const config: Configuration = {
   entry: path.resolve(__dirname, "./src/index.tsx"),
   output: {
     path: path.join(__dirname, "./build"),
-    publicPath: "/Vmoivie_v2/",
+    publicPath: "/",
     filename: "js/[name].[contenthash].js",
     clean: true,
   },
