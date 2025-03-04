@@ -18,7 +18,19 @@ import errorHandler from "./middleware/errorHandler";
 
 const app: Express = express();
 app.use(express.json());
-app.use(cors());
+
+const whitelist = ["http://localhost:3001", "https://vitochuchu.github.io/"];
+const corsOptions = {
+  origin: (origin: any, callback: any) => {
+    if (whitelist.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+};
+
+app.use(cors(corsOptions));
 
 const initServer = async () => {
   logger.info("Server is starting...");
