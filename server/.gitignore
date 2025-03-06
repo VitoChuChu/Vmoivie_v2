@@ -1,5 +1,6 @@
 # dependencies
 /node_modules
+/package-lock.json
 
 # misc
 .DS_Store
@@ -7,8 +8,7 @@
 
 # local env files
 .env
-
 .vscode
 
+/src/routes
 /src/config/swagger.json
-/src/routes/routes.ts

@@ -12,6 +12,7 @@ import swaggerUi from "swagger-ui-express";
 
 /* Config */
 import { RegisterRoutes } from "./routes/routes";
+import { uptimerobotWhiteList } from "./config/uptimerobotWhiteList";
 
 /* Middleware */
 import errorHandler from "./middleware/errorHandler";
@@ -19,7 +20,9 @@ import errorHandler from "./middleware/errorHandler";
 const app: Express = express();
 app.use(express.json());
 
-const whitelist = ["http://localhost:3001", "https://vitochuchu.github.io/"];
+let whitelist = ["http://localhost:3001", "https://vitochuchu.github.io/"];
+whitelist = whitelist.concat(uptimerobotWhiteList);
+
 const corsOptions = {
   origin: (origin: any, callback: any) => {
     if (whitelist.indexOf(origin) !== -1 || !origin) {
