@@ -355,6 +355,27 @@
 				"security": [],
 				"parameters": []
 			}
+		},
+		"/db/health": {
+			"get": {
+				"operationId": "CheckHealth",
+				"responses": {
+					"200": {
+						"description": "String",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"summary": "Check if server alive",
+				"tags": [
+					"Healch Check"
+				],
+				"security": [],
+				"parameters": []
+			}
 		}
 	},
 	"servers": [
