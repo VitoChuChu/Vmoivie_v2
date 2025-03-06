@@ -24,14 +24,14 @@ let whitelist = ["http://localhost:3001", "https://vitochuchu.github.io/"];
 whitelist = whitelist.concat(uptimerobotWhiteList);
 
 const corsOptions = {
-  origin: (origin: any, callback: any) => {
-    logger.info(origin);
-    if (whitelist.indexOf(origin) !== -1 || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
+  // origin: (origin: any, callback: any) => {
+  //   logger.info(origin);
+  //   if (whitelist.indexOf(origin) !== -1 || !origin) {
+  //     callback(null, true);
+  //   } else {
+  //     callback(new Error("Not allowed by CORS"));
+  //   }
+  // },
 };
 
 app.use(cors(corsOptions));
