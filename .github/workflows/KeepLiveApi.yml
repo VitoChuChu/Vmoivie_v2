@@ -1,0 +1,12 @@
+name: API Monitor
+
+on:
+  schedule:
+    - cron: '*/5 0-14 * * *'  # UTC 時間 00:00 - 14:55（對應台灣 08:00 - 22:00）
+
+jobs:
+  call-api:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call API
+        run: curl -X GET "https://vmoivie-v2-backend.onrender.com/db/health"
