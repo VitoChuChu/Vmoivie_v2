@@ -25,6 +25,7 @@ whitelist = whitelist.concat(uptimerobotWhiteList);
 
 const corsOptions = {
   origin: (origin: any, callback: any) => {
+    logger.info(origin);
     if (whitelist.indexOf(origin) !== -1 || !origin) {
       callback(null, true);
     } else {
@@ -37,6 +38,22 @@ app.use(cors(corsOptions));
 
 const initServer = async () => {
   logger.info("Server is starting...");
+
+  // Set Log4js
+  app.use(
+    connectLogger(logger, {
+      level: "auto",
+      format: (req, res, format) =>
+        format(
+          `:remote-addr :method :status :response-time ms :url ${
+            req.is("multipart/form-data")
+              ? "form-data"
+              : JSON.stringify(req.body)
+          }`
+        ),
+      nolog: "/.(gif|jpe?g|png)$/",
+    })
+  );
 
   // Set Router
   const createRouter = (app: any) => {
@@ -57,22 +74,6 @@ const initServer = async () => {
   if (process.env.NODE_ENV !== "production") {
     createSwagger(app);
   }
-
-  // Set Log4js
-  app.use(
-    connectLogger(logger, {
-      level: "auto",
-      format: (req, res, format) =>
-        format(
-          `:remote-addr :method[:status][:respones-times] :url ${
-            req.is("multipart/form-data")
-              ? "fore-data"
-              : JSON.stringify(req.body)
-          }`
-        ),
-      nolog: "/.(gif|jpe?g|png)$/",
-    })
-  );
 
   app.use(errorHandler);
 
