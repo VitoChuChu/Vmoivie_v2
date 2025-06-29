@@ -64,7 +64,7 @@ export const fetchSearchMovies = async (
   searchKey: string
 ): Promise<Movie[]> => {
   return await fetchData({
-    url: "fetchSimilarMovies",
+    url: "fetchSearchMovies",
     method: "put",
     data: { searchKey },
   });

@@ -6,6 +6,7 @@ import Nav from "../components/compose/Nav/Nav";
 import FooterComp from "../components/compose/FooterComp/FooterComp";
 import Home from "./Home/Home";
 import Wishlist from "./Wishlist/Wishlist";
+import Search from "./Search/Search";
 import Login from "./Login/Login";
 import Register from "./Register/Register";
 import FilmPage from "./FilmPage/FilmPage";
@@ -45,7 +46,8 @@ const App: React.FC = () => {
     setToFixFooter(
       currentUrl.includes("login") ||
         currentUrl.includes("register") ||
-        currentUrl.includes("wishlist")
+        currentUrl.includes("wishlist") ||
+        currentUrl.includes("search")
     );
   }, [location]);
 
@@ -107,6 +109,7 @@ const App: React.FC = () => {
             path="/wishlist"
             element={<Wishlist scrollToTop={scrollToTop} />}
           />
+          <Route path="/search" element={<Search scrollToTop={scrollToTop} />} />
           <Route
             path="/login"
             element={<Login loginStatusHandler={loginStatusHandler} />}
