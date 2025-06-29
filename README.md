@@ -34,12 +34,12 @@ Backend
 - TypeORM
 - Tsoa
 - Swagger
-- Deploy by Render
+- Deploy by Zeabur
 
 Database
 
 - Postgres
-- Deploy by Render
+- Deploy by Zeabur
 
 AI
 
