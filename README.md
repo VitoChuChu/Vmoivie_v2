@@ -12,6 +12,7 @@ This website has collected the movies information from The Movie Database. Inclu
 - Find the hotest movies.
 - Find what is the upcoming movies.
 - Filter the movies by genres.
+- Search for movies by title.
 - Login and Register.
 - Wishlist to save your favorite movies.
 
