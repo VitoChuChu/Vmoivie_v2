@@ -50,17 +50,21 @@ const Nav: React.FC<NavProps> = ({ loginStatus, loginStatusHandler }) => {
       key: "1",
     },
     {
-      label: <Link to="/wishlist">Wishlist</Link>,
+      label: <Link to="/search">Search</Link>,
       key: "2",
+    },
+    {
+      label: <Link to="/wishlist">Wishlist</Link>,
+      key: "3",
     },
     !loginStatus
       ? {
           label: <Link to="/login">Login</Link>,
-          key: "3",
+          key: "4",
         }
       : {
           label: "Logout",
-          key: "4",
+          key: "5",
           onClick: () => {
             clearLocalStorage();
             loginStatusHandler();
