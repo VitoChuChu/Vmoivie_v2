@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Input } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
+import { CustomizeButton } from "../../components/atoms/button/CustomizeButton";
 import { CenterCenterRow, CenterCenterCol } from "../../components/atoms/grid/grid";
 import { StyledH1 } from "../../components/atoms/text/text";
 import MoviesCard from "../../components/compose/Cards/MoviesCard";
@@ -14,27 +16,31 @@ const Search: React.FC<SearchProps> = ({ scrollToTop }) => {
   const [searchKey, setSearchKey] = useState<string>("");
   const [movies, setMovies] = useState<Movie[]>([]);
 
-  const handleSearch = async (value: string) => {
-    if (!value) return;
-    const data = await fetchSearchMovies(value);
+  const handleSearch = async (value?: string) => {
+    const key = value ?? searchKey;
+    if (!key) return;
+    const data = await fetchSearchMovies(key);
     if (data) setMovies(data);
   };
 
   return (
     <CenterCenterRow>
       <CenterCenterCol span={24} style={{ marginTop: "8vh" }}>
-        <Input.Search
+        <Input
           placeholder="Search movies"
-          enterButton
+          prefix={<SearchOutlined />}
           value={searchKey}
           onChange={(e) => setSearchKey(e.target.value)}
-          onSearch={handleSearch}
+          onPressEnter={() => handleSearch()}
           style={{ maxWidth: 300 }}
         />
+        <div>
+          <CustomizeButton onClick={() => handleSearch()}>Search</CustomizeButton>
+        </div>
       </CenterCenterCol>
       {movies.length === 0 ? (
         <CenterCenterCol span={24} style={{ marginTop: "2vh" }}>
-          <StyledH1>Type a keyword to search movies.</StyledH1>
+          <StyledH1>Try to search something</StyledH1>
         </CenterCenterCol>
       ) : (
         movies.map((item) => (

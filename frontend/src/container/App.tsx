@@ -46,7 +46,8 @@ const App: React.FC = () => {
     setToFixFooter(
       currentUrl.includes("login") ||
         currentUrl.includes("register") ||
-        currentUrl.includes("wishlist")
+        currentUrl.includes("wishlist") ||
+        currentUrl.includes("search")
     );
   }, [location]);
 
